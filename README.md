@@ -31,9 +31,8 @@ Enjoy! thank you.
 ### TODOs:
 
 - [x] Add react-navigation
-- [ ] Add Welcome Screen
-- [ ] Wrap with a state provider
-- [ ] Support dark mode background
+- [x] Add Welcome Screen 
+- [x] Display articles from api in a Category Cards 
+- [x] Wrap with a state provider
+- [ ] Save favorites capability 
 - [ ] Save user data on cloud
-- [ ] Add theme switch accessibility
-- [ ] Add Splash Screen
