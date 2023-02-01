@@ -4,7 +4,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { CategoriesScreen, FavoritesScreen } from '../screens';
 import Icon from 'react-native-vector-icons/Fontisto';
 import { StyleSheet, Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
-// import auth from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
+import GoogleAuth from '../components/GoogleAuth';
 // import Login from '../components/Login';
 
 const CustomHeader = ({ navigation }) => {
@@ -16,6 +17,7 @@ const CustomHeader = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
                 <Text style={styles.headerText}>Menu</Text>
             </TouchableOpacity>
+            {/* <GoogleAuth/> */}
             {/* <Login /> */}
             {/* <GoogleSigninButton
                 onPress={() => onGoogleButtonPress()}
@@ -37,7 +39,8 @@ export default () => {
                     name="Categories"
                     component={CategoriesScreen}
                     options={{
-                        header: props => <CustomHeader {...props} />,
+                        headerTitle: props => <CustomHeader {...props} />,
+                        // header: props => <CustomHeader {...props} />,
                         tabBarLabel: "Categories",
                         tabBarColor: '#f8f9f9',
                         tabBarIcon: ({ color }) => (
@@ -50,6 +53,7 @@ export default () => {
                     component={FavoritesScreen}
                     options={{
                         header: props => <CustomHeader {...props} />,
+                        headerTitle: props => <CustomHeader {...props} />,
                         tabBarLabel: 'Favorites',
                         tabBarColor: '#694fad',
                         tabBarIcon: ({ color }) => (
