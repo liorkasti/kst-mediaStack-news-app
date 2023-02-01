@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { useQuery } from 'react-query';
+// import GoogleAuth from '../components/GoogleAuth';
 import MediaCard from '../components/MediaCard';
 import { CATEGORIES } from '../constants/categories';
 import { fetchData, useFetchMediaStack } from '../hooks/useFetch';
@@ -9,6 +10,7 @@ import { fetchData, useFetchMediaStack } from '../hooks/useFetch';
 const CategoriesScreen = ({ navigation }) => {
   const [newsData, setNewsData] = useState([]);
   const [selected, setSelected] = useState([]);
+
 
   const handleSelection = category => {
     fetchData(category, 'us')
@@ -37,6 +39,7 @@ const CategoriesScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* <GoogleAuth /> */}
       <SelectList
         setSelected={(val) => setSelected(val)}
         data={CATEGORIES}
