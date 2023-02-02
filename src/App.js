@@ -9,8 +9,7 @@ import AppContainer from './navigation';
 import configureStore from './redux/store';
 
 const App = () => {
-  const store = configureStore();
-  // console.log('store: ', store)
+  console.log('store: ', configureStore)
   const queryClient = new QueryClient()
 
   useEffect(() => {
@@ -18,7 +17,7 @@ const App = () => {
   });
 
   return (
-    <Provider store={store}>
+    <Provider store={configureStore}>
       <QueryClientProvider client={queryClient}>
         <AppContainer />
       </QueryClientProvider>

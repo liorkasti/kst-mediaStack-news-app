@@ -1,16 +1,38 @@
-import React from 'react';
-import { StyleSheet, Text, View, FlatList, ActivityIndicator, Image } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, FlatList, Pressable, Image } from 'react-native';
 import moment from "moment";
 import { THEME } from '../constants/theme'
+import LottieView from 'lottie-react-native';
+import { useQuery } from 'react-query';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleFavorite } from '../redux/actions'
 
 const MediaCard = ({ data }) => {
+  // const { data: news, isLoading } = useQuery(newsQuery);
+  const dispatch = useDispatch();
+  const favorites = useSelector(state => state);
+  console.log('favorites :>> ', favorites);
+
   // console.log('data :>> ', data.data);
+
+  const toggleHeart = (item) => {
+    console.log('item :>> ', item);
+    dispatch(dispatch(toggleFavorite(item)));
+  }
+
   return (
     <FlatList
       style={styles.container}
       data={data}
       renderItem={({ item }) => (
         <View>
+          <Pressable onPress={() => toggleHeart(item)} style={styles.like}>
+            <LottieView
+              // progress={progress}
+              source={require('../assets/feed_heart.json')}
+              style={styles.lottie}
+            />
+          </Pressable>
           <Text style={styles.articleTitle}>{item.title}</Text>
           <Text style={styles.date}>{item.category}</Text>
           <View style={styles.newsContainer}>
@@ -40,6 +62,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
+  },
+  like: {
+    position: 'absolute',
+    start: 5,
+    top: 5,
+  },
+  lottie: {
+    height: 35,
   },
   articleTitle: {
     color: THEME.mediaGreen,
