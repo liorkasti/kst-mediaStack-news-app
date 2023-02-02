@@ -17,7 +17,7 @@ const CustomHeader = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
                 <Text style={styles.headerText}>Menu</Text>
             </TouchableOpacity>
-            {/* <GoogleAuth/> */}
+            <GoogleAuth/>
             {/* <Login /> */}
             {/* <GoogleSigninButton
                 onPress={() => onGoogleButtonPress()}

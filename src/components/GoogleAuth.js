@@ -9,6 +9,7 @@ import auth from '@react-native-firebase/auth';
 const GoogleAuth = () => {
     GoogleSignin.configure({
         webClientId: '770326205412-uqhusi42qtjko4q8n9h2kfo4je9kfk88.apps.googleusercontent.com',
+        offlineAccess: false,
     });
     const [user, setUser] = useState('');
 
