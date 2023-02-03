@@ -1,6 +1,6 @@
 import { takeEvery, call, put, select } from 'redux-saga/effects';
-import { LOGIN, LOGOUT, ADD_FAVORITE, SET_FAVORITES } from '../redux/types';
-import { login, logout, addFavorite, setFavorites, setLoading } from '../redux/actions';
+import { LOGIN, LOGOUT, ADD_FAVORITE, SET_FAVORITES, TOGGLE_FAVORITE } from '../redux/types';
+import { login, logout, addFavorite, setFavorites, setLoading, toggleFavorites } from '../redux/actions';
 // import { getFavorites, setFavorites as setFavoritesFirebase } from './firebase';
 import { getUser } from './selectors';
 
@@ -53,7 +53,8 @@ function* handleAddFavorite(action) {
     yield call(() => setFavoritesFirebase(user.uid, [...favorites, action.item]));
 
     // Dispatch the addFavorite action to update the favorites in the state
-    yield put(addFavorite(action.item));
+    // yield put(addFavorite(action.item));
+    yield put(toggleFavorites(action.item));
   } catch (error) {
     // Handle the error
     // ...
@@ -61,9 +62,9 @@ function* handleAddFavorite(action) {
 }
 
 function* rootSaga() {
-//   yield takeEvery(LOGIN, handleLogin);
-//   yield takeEvery(LOGOUT, handleLogout);
-  yield takeEvery(ADD_FAVORITE, handleAddFavorite);
+  yield takeEvery(LOGIN, handleLogin);
+  yield takeEvery(LOGOUT, handleLogout);
+  yield takeEvery(TOGGLE_FAVORITE, handleAddFavorite);
 }
 
 export default rootSaga;

@@ -2,8 +2,8 @@ import { combineReducers } from 'redux';
 
 import {
   TOGGLE_FAVORITE,
-  LOGOUT,
   LOGIN,
+  LOGOUT,
   ADD_FAVORITE,
   SET_FAVORITES,
   SET_LOADING
@@ -16,11 +16,13 @@ const initialState = {
 };
 
 const googleAuthReducer = (state = initialState, action) => {
-  switch (action.type) {
+  const { type, payload } = action;
+  console.log('payload :>> ', action);
+  switch (type) {
     case 'LOGIN':
       return {
         ...state,
-        user: action.user,
+        user: payload.user,
       };
     case 'LOGOUT':
       return {
@@ -33,32 +35,33 @@ const googleAuthReducer = (state = initialState, action) => {
 };
 
 const favoritesReducer = (state = initialState, action) => {
-  switch (action.type) {
+  const { type, payload } = action;
+  switch (type) {
     case 'TOGGLE_FAVORITE':
       const favoriteIndex = state.findIndex(
-        favorite => favorite.id === action.payload.id
+        favorite => favorite.id === payload.id
       );
       if (favoriteIndex === -1) {
-        return [...state, action.payload];
+        return [...state, payload];
       } else {
         return state.filter(
-          favorite => favorite.id !== action.payload.id
+          favorite => favorite.id !== payload.id
         );
       }
     case 'ADD_FAVORITE':
       return {
         ...state,
-        favorites: [...state.favorites, action.item],
+        favorites: [...state.favorites, payload.item],
       };
     case 'SET_FAVORITES':
       return {
         ...state,
-        favorites: action.favorites,
+        favorites: payload.favorites,
       };
     case 'SET_LOADING':
       return {
         ...state,
-        loading: action.loading,
+        loading: payload.loading,
       };
     default:
       return state;
