@@ -1,76 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, useColorScheme, View, Text, TouchableOpacity } from "react-native";
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, statusCodes, } from '@react-native-google-signin/google-signin';
 import { THEME } from '../constants/theme';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, logout, addFavorite, setFavorites, setLoading, toggleFavorites } from '../redux/actions';
-// import database from '@react-native-firebase/database';
+import { storeData, login, logout, addFavorite, setFavorites, setLoading, toggleFavorites } from '../redux/actions';
+import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
+import { ref, db } from '../constants/firebase.utils';
 
 const GoogleAuth = () => {
     const [userInfo, setUserInfo] = useState();
     const isDarkMode = useColorScheme() === 'dark';
+    const [favoriteList, setFavoriteList] = useState([]);
 
     const dispatch = useDispatch();
-    // const { user } = useSelector(state => state.reducers);
+    const { user } = useSelector(state => state);
     // const { loading, favorites } = useSelector(state => state.favorites);
 
     GoogleSignin.configure({
         webClientId: '770326205412-qpsq599n60j6m4g7dhnmgubef0bsrbkf.apps.googleusercontent.com',
     });
 
-    // const getUser = () => {
-    //     let currentUserUid = auth().currentUser.uid
-    //     return (dispatch) => {
-    //         database()
-    //             .ref(`/users/${currentUserUid}`)
-    //             .once('value')
-    //             .then(snapshot => {
-    //                 dispatch({ type: "GETUSER", user: snapshot.val() })
-    //             });
-    //     }
-    // }
-    // const logoff = async () => {
-    //     try {
-    //         await GoogleSignin.revokeAccess();
-    //         await GoogleSignin.signOut();
+    const logoff = () => {
+        try {
+            auth()
+                .signOut()
+                .then(() => //TODO: fetchFavorites(), 
+                    setUserInfo(null),
+                    dispatch(logout()),
+                    console.log('User signed out!'));
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-    //         setUserInfo(null),
-    //             dispatch(logout()),
-    //             console.log('User signed out!');
-    //     } catch (error) {
-    //         console.error(error);
+    // auth().onAuthStateChanged((userInfo) => {
+    //     if (userInfo) {
+    //         setUserInfo(user);
+    //         // dispatch(login(userInfo))
+    //         dispatch(storeData(user.email, favorites = null));
+    //     } else {
+    //         setUserInfo(null);
+    //         dispatch(logout());
     //     }
-    // };
-    const logoff = async () => {
-        auth()
-            .signOut()
-            .then(() => //TODO: fetchFavorites(), 
-                setUserInfo(null),
-                dispatch(logout()),
-                console.log('User signed out!'));
-    }
-
-    // const onAuthStateChanged = (user) => {
-    //     wait(200).then(() => (
-    //         setUser(null), fetchFavorites())
-    //     );
-    // }
+    // });
 
     const onGoogleButtonPress = async () => {
         try {
-            const { idToken, user } = await GoogleSignin.signIn();
-            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+            const googleCredential = new auth.GoogleAuthProvider.credential(idToken);
+            const { idToken, user } = await GoogleSignin.signIn(googleCredential);
+            // const result = await firebase.auth().signInWithPopup(provider);
+
             await GoogleSignin.hasPlayServices();
             if (user) {
-                console.log("GOOGLE USER", user);
                 setUserInfo(user);
-                dispatch(login(user))
-                // //TODO: fetchFavorites(),
+                dispatch(login(user.email, favorites = null))
+                // dispatch(storeData(user.email, favorites = null))
             }
-            // const users = await auth().signInWithCredential(googleCredential);
-            // users.then((user) => { console.log('user :>> ', user); })
-
             return user;
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {

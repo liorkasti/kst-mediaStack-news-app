@@ -31,30 +31,14 @@ import {
 
 const initialState = {
   user: null,
-  users: [],
   favorites: [],
   loading: false,
 };
 
-const reducers = (state = initialState, action) => {
+const googleAuthReducer = (state = initialState, action) => {
   const { type, payload } = action;
-  console.log('payload :>> ', action);
-  // console.log({ user, favorites });
-
+  // console.log('payload :>> ', action);
   switch (type) {
-    case TOGGLE_FAVORITE:
-      const favoriteIndex = state.findIndex(
-        favorite => favorite.id === payload.id
-      );
-      if (favoriteIndex === -1) {
-        console.log({ action })
-        return [...state, payload];
-      } else {
-        return state.filter(
-          console.log({ action }),
-          favorite => favorite.id !== payload.id
-        );
-      }
     case LOGIN:
       return {
         ...state,
@@ -75,6 +59,25 @@ const reducers = (state = initialState, action) => {
         ...state,
         users: payload
       };
+    default:
+      return state;
+  }
+};
+
+const favoritesReducer = (state = initialState, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case TOGGLE_FAVORITE:
+      const favoriteIndex = state.findIndex(
+        favorite => favorite.id === payload.id
+      );
+      if (favoriteIndex === -1) {
+        return [...state, payload];
+      } else {
+        return state.filter(
+          favorite => favorite.id !== payload.id
+        );
+      }
     case ADD_FAVORITE:
       return {
         ...state,
@@ -94,5 +97,10 @@ const reducers = (state = initialState, action) => {
       return state;
   }
 };
+
+const reducers = combineReducers({
+  googleAuth: googleAuthReducer,
+  favorites: favoritesReducer,
+});
 
 export default reducers;

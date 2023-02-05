@@ -4,3 +4,5 @@ export const LOGOUT = 'LOGOUT';
 export const ADD_FAVORITE = 'ADD_FAVORITE';
 export const SET_FAVORITES = 'SET_FAVORITES';
 export const SET_LOADING = 'SET_LOADING';
+export const GETUSER = 'GETUSER';
+export const FETCH_USERS = 'FETCH_USERS';

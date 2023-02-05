@@ -5,17 +5,27 @@ import { THEME } from '../constants/theme'
 import LottieView from 'lottie-react-native';
 import { useQuery } from 'react-query';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleFavorite } from '../redux/actions'
+import { toggleFavorite, storeData, addFavorite } from '../redux/actions'
+import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import { ref } from '../constants/firebase.utils';
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const MediaCard = ({ data }) => {
   // const { data: news, isLoading } = useQuery(newsQuery);
-  const dispatch = useDispatch();
-  const favorites = useSelector(state => state);
   const isDarkMode = useColorScheme() === 'dark';
 
-  const toggleHeart = (item) => {
-    console.log('item :>> ', item);
-    dispatch(dispatch(toggleFavorite(item)));
+  const dispatch = useDispatch();
+  const { user, favorites, loading } = useSelector(state => state.reducers);
+
+  console.log({ user, favorites, loading });
+
+  const toggleHeart = async (item) => {
+    // console.log('item :>> ', item);
+    // dispatch(storeData(user.email, favorites = [{ ...favorites, item }]))
+    // dispatch(dispatch(storeData(user, favorites, item)));
+    dispatch(dispatch(toggleFavorite(user, favorites, item)));
   }
 
   return (
@@ -68,6 +78,18 @@ const styles = StyleSheet.create({
   },
   lottie: {
     height: 35,
+  },
+  icon: {
+    backgroundColor: 'transparent',
+    color: '#fff',
+    fontSize: 24,
+    opacity: 0.8
+  },
+  iconActive: {
+    backgroundColor: 'transparent',
+    color: THEME.favorite,
+    fontSize: 24,
+    opacity: 0.8
   },
   articleTitle: {
     color: THEME.mediaGreen,
