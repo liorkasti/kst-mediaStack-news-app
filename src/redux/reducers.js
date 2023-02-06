@@ -22,7 +22,8 @@ import {
   TOGGLE_FAVORITE,
   LOGIN,
   LOGOUT,
-  ADD_FAVORITE,
+  FETCH_DATA,
+  FILTER_DATA,
   SET_FAVORITES,
   SET_LOADING,
   GETUSER,
@@ -42,18 +43,41 @@ const reducers = (state = initialState, action) => {
   // console.log({ user, favorites });
 
   switch (type) {
+    case FETCH_DATA:
+      return {
+        ...state,
+        favorites: payload
+      };
+    case FILTER_DATA:
+      return {
+        ...state,
+        favorites: favorites.filter(
+          (item) => item.title === payload)
+      };
     case TOGGLE_FAVORITE:
-      const favoriteIndex = state.findIndex(
-        favorite => favorite.id === payload.id
+      console.log('TOGGLE_FAVORITE :>> ', payload);
+      const favoriteIndex = state.favorites.findIndex(
+        favorite => favorite.id === payload.favorites.id
       );
       if (favoriteIndex === -1) {
-        console.log({ action })
-        return [...state, payload];
+        console.log('favoriteIndex', favoriteIndex, { action })
+        favorites.push([{ ...payload.favorites.article },
+        { isFavorite: isFavorite }, { id: Math.floor(Math.random() * 90000) + 10000 }])
+        db.collection('users').doc(state.user).update(favorites)
+        // return [...state, payload.favorites];
+        return {
+          ...state,
+          favorites: favorites,
+        };
       } else {
-        return state.filter(
-          console.log({ action }),
-          favorite => favorite.id !== payload.id
+        console.log('favoriteIndex', favoriteIndex, { action })
+        state.filter(
+          favorites => payload.favorites.id !== payload.favorites.id
         );
+        return {
+          ...state,
+          favorites: favorites,
+        };
       }
     case LOGIN:
       return {
@@ -73,17 +97,18 @@ const reducers = (state = initialState, action) => {
     case FETCH_USERS:
       return {
         ...state,
-        users: payload
+        favorites: payload
       };
-    case ADD_FAVORITE:
-      return {
-        ...state,
-        favorites: [...state.favorites, payload.item],
-      };
+    // case FETCH_DATA:
+    //   // console.log('payload :>> ', payload);
+    //   return {
+    //     ...state,
+    //     favorites: payload,
+    //   };
     case SET_FAVORITES:
       return {
         ...state,
-        favorites: payload.favorites,
+        favorites: payload,
       };
     case SET_LOADING:
       return {

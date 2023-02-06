@@ -12,12 +12,9 @@ import { ref, db } from '../constants/firebase.utils';
 const GoogleAuth = () => {
     const [userInfo, setUserInfo] = useState();
     const isDarkMode = useColorScheme() === 'dark';
-    const [favoriteList, setFavoriteList] = useState([]);
 
     const dispatch = useDispatch();
-    const { user } = useSelector(state => state);
-    // const { loading, favorites } = useSelector(state => state.favorites);
-
+    
     GoogleSignin.configure({
         webClientId: '770326205412-qpsq599n60j6m4g7dhnmgubef0bsrbkf.apps.googleusercontent.com',
     });
@@ -48,14 +45,14 @@ const GoogleAuth = () => {
 
     const onGoogleButtonPress = async () => {
         try {
-            const googleCredential = new auth.GoogleAuthProvider.credential(idToken);
-            const { idToken, user } = await GoogleSignin.signIn(googleCredential);
+            const { idToken, user } = await GoogleSignin.signIn();
+            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
             // const result = await firebase.auth().signInWithPopup(provider);
 
             await GoogleSignin.hasPlayServices();
             if (user) {
                 setUserInfo(user);
-                dispatch(login(user.email, favorites = null))
+                dispatch(login(user.email))
                 // dispatch(storeData(user.email, favorites = null))
             }
             return user;

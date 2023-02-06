@@ -5,7 +5,7 @@ import { THEME } from '../constants/theme'
 import LottieView from 'lottie-react-native';
 import { useQuery } from 'react-query';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleFavorite, storeData, addFavorite } from '../redux/actions'
+import { toggleFavorite, storeData, filterData } from '../redux/actions'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -18,14 +18,32 @@ const MediaCard = ({ data }) => {
 
   const dispatch = useDispatch();
   const { user, favorites, loading } = useSelector(state => state.reducers);
-
   console.log({ user, favorites, loading });
 
+
   const toggleHeart = async (item) => {
-    // console.log('item :>> ', item);
-    // dispatch(storeData(user.email, favorites = [{ ...favorites, item }]))
-    // dispatch(dispatch(storeData(user, favorites, item)));
-    dispatch(dispatch(toggleFavorite(user, favorites, item)));
+    try {
+    // const favoriteIndex = favorites.findIndex(
+    //   favorite => favorite.title === item.title
+    // );
+    // console.log('favoriteIndex', favoriteIndex)
+    // console.log('favorites', favorites)
+      dispatch(storeData(user, favorites, item))
+      // if (favoriteIndex < 0) {
+      //   dispatch(storeData(user, favorites, item))
+      // }
+      // else {
+      //   dispatch(filterData(user, favorites, item))
+      // }
+      await console.log('favorites :>> ', favorites);
+    } catch (error) {
+      console.log('Something went wrong while storing in firestore.', error);
+    }
+    // console.log({ user, favorites, item });
+    // dispatch(storeData(user, favorites, item))
+    // dispatch(toggleFavorite(item));
+    // dispatch(storeData(item));
+    // dispatch(addFavorite(item));
   }
 
   return (

@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, useColorScheme } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { useQuery } from 'react-query';
 import MediaCard from '../components/MediaCard';
 import { CATEGORIES } from '../constants/categories';
 import { fetchData, useFetchMediaStack } from '../hooks/useFetch';
+import { fetchFavorites, getData } from '../redux/actions'
 
 const CategoriesScreen = ({ navigation }) => {
   const [newsData, setNewsData] = useState([]);
   const [selected, setSelected] = useState([]);
   const isDarkMode = useColorScheme() === 'dark';
+  const { user, favorites, loading } = useSelector(state => state.reducers);
+  const dispatch = useDispatch();
 
   const handleSelection = category => {
     fetchData(category, 'us')
@@ -24,6 +28,11 @@ const CategoriesScreen = ({ navigation }) => {
   useEffect(() => {
     handleSelection(selected);
   }, [selected]);
+
+  useEffect(() => {
+    if (user) dispatch(fetchFavorites());
+    console.log({ user, favorites, loading });
+  }, []);
 
   // const onSuccess = (data) => { console.log('data :>> ', data); }
   // const onError = (error) => { console.log('error :>> ', error); }
