@@ -201,8 +201,8 @@ export const storeData = async (user, favorites, item) => {
   console.log('favoriteIndex', favoriteIndex)
   try {
     if (favoriteIndex < 0) {
-      ref.doc(user).update({
-        favorites: [{ isFavorite: true, item }, ...favorites],
+      firestore().collection('users').doc(user).update({
+        favorites: [item, ...favorites],
       })
       return ({
         type: FETCH_DATA,
@@ -211,27 +211,8 @@ export const storeData = async (user, favorites, item) => {
     }
     else {
       await ref.update({
-        favorites: firestore.FieldValue.delete({ favorites })
+        favorites: firestore.FieldValue.delete({ item })
       }).then(() => { fetchFavorites(); });
-      // await ref.doc(user).update({
-      //   favorites: items
-      // })
-
-      // .get().then(querySnapshot => {
-      //   querySnapshot.forEach(doc => {
-      //     console.log('MedData', doc.data())
-      //   })
-      // })
-
-      // ref.where(firebase.firestore.FieldPath.documentId(), '=', item).get()
-      // ref.doc(user).update({
-      //   favorites: ref.doc(user).FieldValue.delete(item)
-      // ref.doc(user).delete({
-      //   favorites: [item]
-      // return ({
-      //   type: FILTER_DATA,
-      //   payload: item.title
-      // })
     }
   } catch (error) {
     console.log('Something went wrong while fetching from firestore.', error);
@@ -261,8 +242,8 @@ export const fetchFavorites = async isFetched => {
         type: FETCH_USERS,
         payload: favorites
           .data()
-        .favorites?.sort((a, b) => a.published_at < b.published_at)
-        .slice(0, 20),
+          .favorites?.sort((a, b) => a.published_at < b.published_at)
+          .slice(0, 20),
       });
     };
   } catch (error) {
