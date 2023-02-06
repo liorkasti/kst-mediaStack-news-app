@@ -17,7 +17,7 @@ export const fetchData = async (category = "general", country = "us") => {
 };
 
 export const useFetchMediaStack = (category = "general", country = "us", onSuccess, onError) => {    
-    const res = useQuery('result', fetchData)
+    const res = useQuery(['result',category], fetchData)
     console.log('object :>> ', res);
     console.log('object :>> ', category);
     return (
