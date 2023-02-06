@@ -5,7 +5,7 @@ import {
   QueryClientProvider
 } from 'react-query';
 import { Provider } from 'react-redux';
-import AppContainer from './navigation/AppContainer';
+import AppContainer from './navigation/';
 
 import configureStore from './redux/store';
 
