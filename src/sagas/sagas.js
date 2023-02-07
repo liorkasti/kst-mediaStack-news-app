@@ -1,6 +1,6 @@
 import { takeEvery, call, put, select } from 'redux-saga/effects';
-import { LOGIN, LOGOUT, ADD_FAVORITE, SET_FAVORITES, TOGGLE_FAVORITE } from '../redux/types';
-import { login, logout, addFavorite, setFavorites, setLoading, toggleFavorites } from '../redux/actions';
+import { TOGGLE_FAVORITE, LOGIN, LOGOUT, FETCH_DATA, FILTER_DATA, SET_FAVORITES, SET_LOADING, GETUSER, FETCH_USERS } from '../redux/types';
+import { login, logout, toggleFavorite, storeData, removeData, filterData, setFavorites, setLoading, fetchFavorites } from '../redux/actions';
 // import { getFavorites, setFavorites as setFavoritesFirebase } from './firebase';
 import { getUser } from './selectors';
 
@@ -18,7 +18,7 @@ function* handleLogin() {
     yield put(login(user));
 
     // Get the favorites from Firebase
-    const favorites = yield call(() => getFavorites(user.uid));
+    const favorites = yield call(() => fetchFavorites(user.email));
 
     // Dispatch the setFavorites action to update the favorites in the state
     yield put(setFavorites(favorites));

@@ -41,12 +41,10 @@ const GoogleAuth = () => {
 
     const logoff = async () => {
         try {
-            auth()
-                .signOut()
-                .then(() => //TODO: fetchFavorites(), 
-                    setUserInfo(null),
-                    dispatch(logout()),
-                    console.log('User signed out!'));
+            auth().signOut()
+            setUserInfo(null)
+            dispatch(logout())
+            console.log('User signed out!');
         } catch (error) {
             console.error(error);
         }
