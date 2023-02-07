@@ -17,7 +17,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 
 export const toggleFavorite = (payload) => {
-
   const { user, favorites } = useSelector(state => state.reducers);
   console.log('toggleFavorite :>> ', { payload }, { user, favorites });
   // console.log(user, [{ ...favorites },
@@ -34,68 +33,54 @@ export const toggleFavorite = (payload) => {
   return { type: TOGGLE_FAVORITE, payload };
 };
 
-export const logout = () => {
+export const logout = async () => dispatch => {
   // console.log('payload :>> ', payload);
   ref.doc(null);
-  return ({
+  dispatch({
     type: LOGOUT,
   });
 }
-export const login = (payload) => {
-  // console.log('payload :>> ', payload);
-  ref.doc(payload);
-  return ({
-    type: LOGIN,
+export const login = async (payload, callback) => dispatch => {
+  try {
+    // console.log('payload :>> ', payload);
+    ref.doc(payload);
+    callback ? callback() : null;
+    dispatch({
+      type: LOGIN,
+      payload,
+    });
+  } catch (error) {
+    console.log('Remove: Something went wrong while fetching from firestore.', error);
+  }
+}
+
+export const setLoading = (payload, callback) => dispatch => {
+  callback ? callback() : null;
+  dispatch({
+    type: SET_LOADING,
     payload,
   });
 }
 
-export const setFavorites = async (payload) => {
-  let data = ref.doc(payload)
-  console.log('data :>> ', data);
-  return ({
-    type: SET_FAVORITES,
-    payload: data,
-  });
-}
-
-export const getData = async (user, favorites, item) => {
-  try {
-    await ref.doc(user).update({
-      favorites: [item, ...favorites],
-      // favorites: firestore.FieldValue.arrayUnion(favorites)
-    }).then(() => { fetchFavorites(user); });
-  } catch (error) {
-    console.log('Something went wrong while storing in firestore.', error);
-  }
-};
-
-export const setLoading = (payload) => ({
-  type: SET_LOADING,
-  payload,
-});
-
-export const storeData = async (user, favorites, item) => {
+export const storeData = async (user, favorites, item, callback) => {
   try {
     await firestore().collection('users').doc(user).update({
       favorites: [item, ...favorites],
-    }).then(() => {
-      fetchFavorites(user);
-    });
+    })
+    callback ? callback() : null;
   } catch (error) {
     console.log('Store: Something went wrong while fetching from firestore.', error);
   }
 }
 
-export const removeData = async (user, favorites, item) => {
+export const removeData = async (user, favorites, item, callback) => {
   try {
     await firestore().collection('users').doc(user).update({
       // [favorites]: firestore().FieldValue.delete()
-      [`favorites.${item}`]: firestore().FieldValue.delete()
-      // favorites: firestore().FieldValue.delete({item})
-    }).then(() => {
-      fetchFavorites(user);
+      // [`favorites.${item}`]: firestore().FieldValue.delete()
+      favorites: firestore().FieldValue.delete({ item })
     })
+    callback ? callback() : null;
   } catch (error) {
     console.log('Remove: Something went wrong while fetching from firestore.', error);
   }
@@ -118,10 +103,11 @@ export const removeData = async (user, favorites, item) => {
 //   }
 // };
 
-export const fetchFavorites = async (user) => {
+export const fetchFavorites = async (user, didLoad) => {
   try {
     let favorites = await ref.doc(user).get();
     return dispatch => {
+      didLoad ? didLoad() : null;
       dispatch({
         type: FETCH_USERS,
         payload: favorites

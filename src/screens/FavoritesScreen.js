@@ -19,12 +19,9 @@ const FavoritesScreen = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
-  // console.log('newsData :>> ', newsData);
-  console.log('favorites :>> ', favorites);
-
   const handleSelection = category => {
     if (user) {
-      dispatch(fetchData(user, favorites, loading)).then(setNewsData(favorites))
+      dispatch(fetchFavorites(user)).then(setNewsData(favorites))
     }
     console.log({ user, favorites, loading })
   }
@@ -34,7 +31,7 @@ const FavoritesScreen = ({ navigation }) => {
   }, [selected]);
 
   useEffect(() => {
-    if (user) dispatch(fetchData(user, favorites, loading));
+    if (user) dispatch(fetchFavorites(user));
     // console.log({ user, favorites, loading });
   }, []);
 
@@ -60,10 +57,10 @@ const FavoritesScreen = ({ navigation }) => {
         label="Category"
         defaultOption={{ key: '0', value: 'Choose Category' }}
       />
-      {!favorites ?
-        listEmptyComponent()
-        :
+      {favorites ?
         <MediaCard data={newsData} />
+        :
+        listEmptyComponent()
       }
     </View>
   )
@@ -73,8 +70,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
-    paddingHorizontal: 20,
-    paddingTop: 20,
     alignContent: 'center',
   },
   title: {

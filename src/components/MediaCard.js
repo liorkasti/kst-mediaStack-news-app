@@ -5,20 +5,23 @@ import { THEME } from '../constants/theme'
 import LottieView from 'lottie-react-native';
 import { useQuery } from 'react-query';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleFavorite, storeData, removeData, filterData } from '../redux/actions'
+import { toggleFavorite, storeData, removeData, filterData, fetchFavorites } from '../redux/actions'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { ref } from '../constants/firebase.utils';
 import Icon from 'react-native-vector-icons/Fontisto';
+import { useRoute } from '@react-navigation/native';
 
 const MediaCard = ({ data }) => {
+  const [booked, setBooked] = useState(false);
   // const { data: news, isLoading } = useQuery(newsQuery);
   const isDarkMode = useColorScheme() === 'dark';
+  const route = useRoute();
 
   const dispatch = useDispatch();
   const { user, favorites, loading } = useSelector(state => state.reducers);
-  // console.log({ user, favorites, loading });
+  // console.log('MediaCard>> ', { user, favorites, loading });
 
   const toggle = async (item) => {
     if (user) {
@@ -27,9 +30,13 @@ const MediaCard = ({ data }) => {
       )
       console.log('Index :>> ', favoriteIndex);
       if (favoriteIndex < 0) {
-        dispatch(await storeData(user, favorites, item))
+        dispatch(await storeData(user, favorites, item,
+          () => dispatch(fetchFavorites)))
+        // setBooked(true)
       } else {
-        dispatch(await removeData(user, favorites, favoriteIndex))
+        dispatch(await removeData(user, favorites, item,
+          () => dispatch(fetchFavorites)))
+        // setBooked(false)
       }
 
     } else { Alert.alert('Oops!', 'Please sign in first.') }
@@ -45,6 +52,12 @@ const MediaCard = ({ data }) => {
     } else {
       isBooked = true
     }
+    if (route === 'Favorites') {
+      isBooked = true
+      console.log({ isBooked, routere });
+    }
+    setBooked(isBooked)
+
     return (
       <View>
         <Pressable onPress={() => toggle(item)} style={styles.like}

@@ -61,8 +61,10 @@ const GoogleAuth = () => {
             await GoogleSignin.hasPlayServices();
             if (user) {
                 setUserInfo(user);
-                dispatch(login(user.email))
-                dispatch(setLoading(true))
+                dispatch(login(user.email, () =>
+                    dispatch(setLoading(true), () =>
+                        fetchFavorites(user.email))
+                ))
                 // dispatch(storeData(user.email, favorites = null))
             }
             return user;

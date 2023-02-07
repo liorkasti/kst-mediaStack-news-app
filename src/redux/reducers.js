@@ -21,8 +21,6 @@ const initialState = {
 
 const reducers = (state = initialState, action) => {
   const { type, payload } = action;
-  // console.log('payload :>> ', action);
-  // console.log({ user, favorites });
 
   switch (type) {
     case FETCH_DATA:
