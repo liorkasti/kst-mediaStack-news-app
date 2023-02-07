@@ -4,7 +4,7 @@ import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, statusCodes, } from '@react-native-google-signin/google-signin';
 import { THEME } from '../constants/theme';
 import { useDispatch, useSelector } from 'react-redux';
-import { storeData, login, logout, addFavorite, setFavorites, setLoading, toggleFavorites } from '../redux/actions';
+import { storeData, login, logout, fetchFavorites, setFavorites, setLoading, toggleFavorites } from '../redux/actions';
 import database from '@react-native-firebase/database';
 import firestore from '@react-native-firebase/firestore';
 import { ref, db } from '../constants/firebase.utils';
@@ -22,11 +22,11 @@ const GoogleAuth = () => {
     });
 
     //TODO: fix signout 
-    // auth().onAuthStateChanged((userInfo) => {
-    //     if (userInfo) {
+    // auth().onAuthStateChanged((user) => {
+    //     if (user) {
     //         setUserInfo(user);
     //         // dispatch(login(userInfo))
-    //         dispatch(storeData(user.email, favorites = null));
+    //         // dispatch(storeData(user.email, favorites = null));
     //     } else {
     //         setUserInfo(null);
     //         dispatch(logout());
@@ -41,12 +41,11 @@ const GoogleAuth = () => {
 
     const logoff = async () => {
         try {
-            auth()
-                .signOut()
-                .then(() => //TODO: fetchFavorites(), 
-                    setUserInfo(null),
-                    dispatch(logout()),
-                    console.log('User signed out!'));
+            auth().signOut();
+            setUserInfo(null);
+            dispatch(await logout(dispatch(setLoading(false), () =>
+                dispatch(fetchFavorites(null)))));
+            console.log('User signed out!');
         } catch (error) {
             console.error(error);
         }
@@ -61,9 +60,9 @@ const GoogleAuth = () => {
             await GoogleSignin.hasPlayServices();
             if (user) {
                 setUserInfo(user);
-                dispatch(login(user.email, () =>
+                dispatch(await login(user.email, () =>
                     dispatch(setLoading(true), () =>
-                        fetchFavorites(user.email))
+                        dispatch(fetchFavorites(user.email)))
                 ))
                 // dispatch(storeData(user.email, favorites = null))
             }

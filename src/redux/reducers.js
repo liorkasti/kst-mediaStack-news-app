@@ -31,7 +31,9 @@ const reducers = (state = initialState, action) => {
     case FILTER_DATA:
       return {
         ...state,
-        favorites: payload
+        // favorites: payload
+        favorites: state.favorites.filter(
+          (item) => item.title === payload.title)
       };
     case LOGIN:
       return {

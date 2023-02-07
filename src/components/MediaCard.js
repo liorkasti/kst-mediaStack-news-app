@@ -38,7 +38,6 @@ const MediaCard = ({ data }) => {
           () => dispatch(fetchFavorites)))
         // setBooked(false)
       }
-
     } else { Alert.alert('Oops!', 'Please sign in first.') }
   }
 

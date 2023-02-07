@@ -16,26 +16,10 @@ import {
 } from './types';
 import { useDispatch, useSelector } from 'react-redux';
 
-export const toggleFavorite = (payload) => {
-  const { user, favorites } = useSelector(state => state.reducers);
-  console.log('toggleFavorite :>> ', { payload }, { user, favorites });
-  // console.log(user, [{ ...favorites },
-  // { id: Math.floor(Math.random() * 90000) + 10000 },
-  // { isFavorite: isFavorite },
-  // { article: payload },]);
-
-  ref.doc(user).update([
-    { ...favorites },
-    { id: Math.floor(Math.random() * 90000) + 10000 },
-    { isFavorite: isFavorite },
-    { article: payload },
-  ])
-  return { type: TOGGLE_FAVORITE, payload };
-};
-
-export const logout = async () => dispatch => {
+export const logout = async (callback) => dispatch => {
   // console.log('payload :>> ', payload);
   ref.doc(null);
+  callback ? callback() : null;
   dispatch({
     type: LOGOUT,
   });
@@ -64,7 +48,7 @@ export const setLoading = (payload, callback) => dispatch => {
 
 export const storeData = async (user, favorites, item, callback) => {
   try {
-    await firestore().collection('users').doc(user).update({
+    await ref.doc(user).update({
       favorites: [item, ...favorites],
     })
     callback ? callback() : null;
@@ -75,7 +59,7 @@ export const storeData = async (user, favorites, item, callback) => {
 
 export const removeData = async (user, favorites, item, callback) => {
   try {
-    await firestore().collection('users').doc(user).update({
+    await ref.doc(user).update({
       // [favorites]: firestore().FieldValue.delete()
       // [`favorites.${item}`]: firestore().FieldValue.delete()
       favorites: firestore().FieldValue.delete({ item })
@@ -85,23 +69,6 @@ export const removeData = async (user, favorites, item, callback) => {
     console.log('Remove: Something went wrong while fetching from firestore.', error);
   }
 }
-
-// export const filterFavorites = async (user) => {
-//   try {
-//     let favorites = await ref.doc(user).get();
-//     return dispatch => {  // TODO: fix warning
-
-//       dispatch({
-//         type: FILTER_DATA,
-//         payload: favorites
-//           .data()
-//           .favorites?.sort((a, b) => a.published_at > b.published_at)
-//       });
-//     };
-//   } catch (error) {
-//     console.log('Something went wrong while fetching from firestore.', error);
-//   }
-// };
 
 export const fetchFavorites = async (user, didLoad) => {
   try {
@@ -119,3 +86,13 @@ export const fetchFavorites = async (user, didLoad) => {
     console.log('Something went wrong while fetching from firestore.', error);
   }
 };
+
+export async function fetch(user, dispatch) {
+  let favorites = await ref.doc(user).get();
+  dispatch({
+    type: FETCH_USERS,
+    payload: favorites
+      .data()
+      .favorites?.sort((a, b) => a.published_at > b.published_at)
+  });
+}
