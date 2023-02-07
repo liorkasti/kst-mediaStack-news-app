@@ -30,6 +30,12 @@ const reducers = (state = initialState, action) => {
         ...state,
         favorites: payload
       };
+    case FILTER_DATA:
+      return {
+        ...state,
+        favorites: favorites.filter(
+          (item) => item.title === payload.title)
+      };
     case LOGIN:
       return {
         ...state,

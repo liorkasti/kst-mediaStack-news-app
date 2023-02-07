@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, Pressable,Alert, useColorScheme, Image } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Pressable, Alert, useColorScheme, Image } from 'react-native';
 import moment from "moment";
 import { THEME } from '../constants/theme'
 import LottieView from 'lottie-react-native';
@@ -22,13 +22,10 @@ const MediaCard = ({ data }) => {
   // console.log({ user, favorites, loading });
 
   const toggle = async (item) => {
-    if(user){
+    if (user) {
       dispatch(storeData(user, favorites, item))
-      const favoriteIndex = favorites.findIndex(
-        favorite => favorite.title === item.title
-      );
-      setIsBooked(true)
-    }else{Alert.alert('Oops!','Please sign in first.')}
+      if (favoriteIndex >= 0) setIsBooked(true)
+    } else { Alert.alert('Oops!', 'Please sign in first.') }
   }
 
   return (
@@ -37,12 +34,14 @@ const MediaCard = ({ data }) => {
       data={data}
       renderItem={({ item }) => (
         <View>
-          <Pressable onPress={() => toggle(item)} style={styles.like}>
-          {isBooked ?
-                    <Icon name='bookmark-alt' style={styles.iconActive} />
-                    :
-                    <Icon name='bookmark' style={styles.icon} />
-                }
+          <Pressable onPress={() => toggle(item)} style={styles.like}
+            hitSlop={{ top: 20, bottom: 20, left: 50, right: 50 }}
+            >
+            {isBooked ?
+              <Icon name='bookmark-alt' style={styles.iconActive} />
+              :
+              <Icon name='bookmark' style={styles.icon} />
+            }
           </Pressable>
           <Text style={styles.articleTitle}>{item.title}</Text>
           <Text style={styles.date}>{item.category}</Text>
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     backgroundColor: 'transparent',
-    color: '#fff',
+    // color: '#fff',
     fontSize: 24,
     opacity: 0.8
   },

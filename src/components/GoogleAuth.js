@@ -12,6 +12,7 @@ import { ref, db } from '../constants/firebase.utils';
 const GoogleAuth = () => {
     const [userInfo, setUserInfo] = useState();
     const isDarkMode = useColorScheme() === 'dark';
+    const { user, favorites, loading } = useSelector(state => state.reducers);
 
     const dispatch = useDispatch();
 
@@ -19,7 +20,25 @@ const GoogleAuth = () => {
         webClientId: '770326205412-qpsq599n60j6m4g7dhnmgubef0bsrbkf.apps.googleusercontent.com',
     });
 
-    const logoff = () => {
+    //TODO: fix signout 
+    // auth().onAuthStateChanged((userInfo) => {
+    //     if (userInfo) {
+    //         setUserInfo(user);
+    //         // dispatch(login(userInfo))
+    //         dispatch(storeData(user.email, favorites = null));
+    //     } else {
+    //         setUserInfo(null);
+    //         dispatch(logout());
+    //     }
+    // });
+    // useEffect(() => {
+    //     if (user) {
+    //         setUserInfo(user)
+    //     } else { null }
+    //     return () => { setUserInfo(user || null) };
+    // }, [userInfo]);
+
+    const logoff = async () => {
         try {
             auth()
                 .signOut()
@@ -31,17 +50,6 @@ const GoogleAuth = () => {
             console.error(error);
         }
     };
-
-    // auth().onAuthStateChanged((userInfo) => {
-    //     if (userInfo) {
-    //         setUserInfo(user);
-    //         // dispatch(login(userInfo))
-    //         dispatch(storeData(user.email, favorites = null));
-    //     } else {
-    //         setUserInfo(null);
-    //         dispatch(logout());
-    //     }
-    // });
 
     const onGoogleButtonPress = async () => {
         try {
@@ -73,7 +81,7 @@ const GoogleAuth = () => {
         }
     }
 
-    if (!userInfo) {
+    if (!userInfo || !loading) {
         return (
             <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>
                 <GoogleSigninButton

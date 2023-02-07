@@ -15,10 +15,10 @@ const App = () => {
 
   return (
     <Provider store={configureStore}>
-      <QueryClientProvider client={queryClient}>
+      {/* <QueryClientProvider client={queryClient}> */}
         <GoogleAuth />
         <AppContainer />
-      </QueryClientProvider>
+      {/* </QueryClientProvider> */}
     </Provider>
   );
 };

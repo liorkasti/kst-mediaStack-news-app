@@ -50,11 +50,12 @@ export const login = (payload) => {
   });
 }
 
-export const setFavorites = (payload) => {
-  ref.doc(payload)
+export const setFavorites = async (payload) => {
+  let data = ref.doc(payload)
+  console.log('data :>> ', data);
   return ({
     type: SET_FAVORITES,
-    payload,
+    payload: data,
   });
 }
 
@@ -75,8 +76,9 @@ export const storeData = async (user, favorites, item) => {
       firestore().collection('users').doc(user).update({
         favorites: [item, ...favorites],
       }).then(() => {
-        fetchFavorites(); 
-        setFavorites(user)
+        // dispatch({ type: FILTER_DATA, payload: data });
+        filterFavorites(user);
+        // setFavorites(user)
       });
       // return ({
       //     type: FETCH_DATA,
@@ -96,29 +98,40 @@ export const storeData = async (user, favorites, item) => {
 
 export const getData = async (user, favorites, item) => {
   try {
-    await ref.update({
+    await ref.doc(user).update({
       favorites: firestore.FieldValue.arrayUnion(favorites)
-    }).then(() => { fetchFavorites(); });
-  } catch (e) {
+    }).then(() => { fetchFavorites(user); });
+  } catch (error) {
     console.log('Something went wrong while storing in firestore.', error);
   }
 };
 
-export const fetchFavorites = async isFetched => {
+export const fetchFavorites = async (user) => {
   try {
-    let favorites = await ref.doc('liorkasti@gmail.com').get();
-    // console.log('favorites', ref.doc(user).get())
-    // console.log(favorites.data());
-    return dispatch => {  // TODO: fix warning
-      isFetched ? isFetched() : null;
-      console.log('isFetched :>> ', isFetched);
-
+    let favorites = await ref.doc(user).get();
+    return dispatch => {
       dispatch({
         type: FETCH_USERS,
         payload: favorites
           .data()
           .favorites?.sort((a, b) => a.published_at < b.published_at)
-        // .slice(0, 20),
+      });
+    };
+  } catch (error) {
+    console.log('Something went wrong while fetching from firestore.', error);
+  }
+};
+
+export const filterFavorites = async (user) => {
+  try {
+    let favorites = await ref.doc(user).get();
+    return dispatch => {  // TODO: fix warning
+
+      dispatch({
+        type: FILTER_DATA,
+        payload: favorites
+          .data()
+          .favorites?.sort((a, b) => a.published_at < b.published_at)
       });
     };
   } catch (error) {

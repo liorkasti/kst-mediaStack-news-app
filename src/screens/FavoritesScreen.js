@@ -1,27 +1,42 @@
-import { StyleSheet, Text, FlatList, View, useColorScheme } from 'react-native'
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, useColorScheme } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchFavorites, getData } from '../redux/actions'
+import { SelectList } from 'react-native-dropdown-select-list';
+import { useQuery } from 'react-query';
 import MediaCard from '../components/MediaCard';
+import { CATEGORIES } from '../constants/categories';
+import { fetchData, useFetchMediaStack } from '../hooks/useFetch';
+import { fetchFavorites, setFavorites, getData } from '../redux/actions'
 
-const FavoritesScreen = () => {
+
+const FavoritesScreen = ({ navigation }) => {
+  const [newsData, setNewsData] = useState([]);
+  const [selected, setSelected] = useState([]);
   const isDarkMode = useColorScheme() === 'dark';
-  const emptyList = "Loading...";
-  const title = "Please Login for retrieve your stored data";
-
   const { user, favorites, loading } = useSelector(state => state.reducers);
+  const emptyList = "Loading...";
+  const title = "Please Sign in for retrieve your stored data";
+
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (user) dispatch(fetchFavorites());
-  //   console.log({ user, favorites, loading });
-  // }, []);
+  // console.log('newsData :>> ', newsData);
+  console.log('favorites :>> ', favorites);
 
-  const renderItem = item => {
-    return (
-      <MediaCard data={item} />
-    )
-  };
+  const handleSelection = category => {
+    if (user) {
+      dispatch(getData(user, favorites, loading)).then(setNewsData(favorites))
+    }
+    console.log({ user, favorites, loading })
+  }
+
+  useEffect(() => {
+    handleSelection(selected);
+  }, [selected]);
+
+  useEffect(() => {
+    if (user) dispatch(getData(user, favorites, loading));
+    console.log({ user, favorites, loading });
+  }, []);
 
   const listEmptyComponent = () => {
     return <Text>{emptyList}</Text>;
@@ -34,26 +49,32 @@ const FavoritesScreen = () => {
       </View>
     )
   }
+
   return (
     <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>
-      <FlatList
-        keyExtractor={(index, item) => item}
-        data={favorites}
-        renderItem={renderItem}
-        scrollEnabled
-        ListEmptyComponent={listEmptyComponent}
+      <SelectList
+        setSelected={(val) => setSelected(val)}
+        data={CATEGORIES}
+        save="value"
+        onSelect={() => handleSelection(selected)}
+        label="Category"
+        defaultOption={{ key: '0', value: 'Choose Category' }}
       />
+      {!favorites ?
+        listEmptyComponent()
+        :
+        <MediaCard data={newsData} />
+      }
     </View>
   )
 }
 
-export default FavoritesScreen
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 24,
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 20,
     alignContent: 'center',
   },
   title: {
@@ -64,3 +85,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 })
+
+export default FavoritesScreen
