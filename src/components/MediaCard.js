@@ -18,33 +18,6 @@ const MediaCard = ({ data }) => {
 
   const dispatch = useDispatch();
   const { user, favorites, loading } = useSelector(state => state.reducers);
-  console.log({ user, favorites, loading });
-
-
-  const toggleHeart = async (item) => {
-    try {
-    // const favoriteIndex = favorites.findIndex(
-    //   favorite => favorite.title === item.title
-    // );
-    // console.log('favoriteIndex', favoriteIndex)
-    // console.log('favorites', favorites)
-      dispatch(storeData(user, favorites, item))
-      // if (favoriteIndex < 0) {
-      //   dispatch(storeData(user, favorites, item))
-      // }
-      // else {
-      //   dispatch(filterData(user, favorites, item))
-      // }
-      await console.log('favorites :>> ', favorites);
-    } catch (error) {
-      console.log('Something went wrong while storing in firestore.', error);
-    }
-    // console.log({ user, favorites, item });
-    // dispatch(storeData(user, favorites, item))
-    // dispatch(toggleFavorite(item));
-    // dispatch(storeData(item));
-    // dispatch(addFavorite(item));
-  }
 
   return (
     <FlatList

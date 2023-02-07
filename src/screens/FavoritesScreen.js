@@ -12,10 +12,10 @@ const FavoritesScreen = () => {
   const { user, favorites, loading } = useSelector(state => state.reducers);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (user) dispatch(fetchFavorites());
-    console.log({ user, favorites, loading });
-  }, []);
+  // useEffect(() => {
+  //   if (user) dispatch(fetchFavorites());
+  //   console.log({ user, favorites, loading });
+  // }, []);
 
   const renderItem = item => {
     return (

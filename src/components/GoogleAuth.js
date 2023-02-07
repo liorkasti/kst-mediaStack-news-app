@@ -14,7 +14,7 @@ const GoogleAuth = () => {
     const isDarkMode = useColorScheme() === 'dark';
 
     const dispatch = useDispatch();
-    
+
     GoogleSignin.configure({
         webClientId: '770326205412-qpsq599n60j6m4g7dhnmgubef0bsrbkf.apps.googleusercontent.com',
     });
@@ -53,6 +53,7 @@ const GoogleAuth = () => {
             if (user) {
                 setUserInfo(user);
                 dispatch(login(user.email))
+                dispatch(setLoading(true))
                 // dispatch(storeData(user.email, favorites = null))
             }
             return user;

@@ -32,7 +32,7 @@ const CategoriesScreen = ({ navigation }) => {
   useEffect(() => {
     if (user) dispatch(fetchFavorites());
     console.log({ user, favorites, loading });
-  }, []);
+  }, [loading]);
 
   // const onSuccess = (data) => { console.log('data :>> ', data); }
   // const onError = (error) => { console.log('error :>> ', error); }

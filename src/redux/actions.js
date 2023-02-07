@@ -34,167 +34,38 @@ export const toggleFavorite = (payload) => {
   return { type: TOGGLE_FAVORITE, payload };
 };
 
+export const logout = () => {
+  // console.log('payload :>> ', payload);
+  ref.doc(null);
+  return ({
+    type: LOGOUT,
+  });
+}
 export const login = (payload) => {
   // console.log('payload :>> ', payload);
-  ref.doc(payload)
+  ref.doc(payload);
   return ({
     type: LOGIN,
     payload,
   });
 }
 
-// export const logout = () => ({
-//   type: LOGOUT,
-// });
-
-// export const addFavorite = (payload) => {
-//   const { user, favorites } = useSelector(state => state.reducers);
-
-//   const favs = [
-//     favorites.push(
-//       [{ id: Math.floor(Math.random() * 90000) + 10000 },
-//       { isFavorite: true },
-//       { article: payload }]
-//     )
-//   ]
-//   console.log({ favs });
-
-//   return ({
-//     type: ADD_FAVORITE,
-//     payload: favs,
-//   })
-// };
-
-// export const setFavorites = (favorites) => {
-//   ref.doc(payload)
-//   return ({
-//     type: SET_FAVORITES,
-//     favorites,
-//   });
-// }
-
-export const setLoading = (loading) => ({
-  type: SET_LOADING,
-  loading,
-});
-
-// const getUser = () => {
-//   let currentUserUid = auth().currentUser.uid
-//   return (dispatch) => {
-//     database()
-//       .ref(`/users/${currentUserUid}`)
-//       .once('value')
-//       .then(snapshot => {
-//         dispatch({ type: GETUSER, user: snapshot.val() })
-//       });
-//   }
-// }
-
-// export const storeData = async (user, favorites, item) => {
-//   // const { user, favorites } = useSelector(state => state.reducers);
-//   let currentUserUid = auth().currentUser.uid
-//   console.log('currentUserUid :>> ', currentUserUid);
-//   const favs = [
-//     favorites.push(
-//       [{ id: Math.floor(Math.random() * 90000) + 10000 },
-//       { isFavorite: true },
-//       { article: payload }]
-//     )
-//   ]
-//   console.log({ favs });
-
-//   try {
-//     console.log({ user, favorites, item })
-//     await ref.doc(user).update({
-//       favorites: firestore.FieldValue.arrayUnion({ user, favorites, item })
-//     }).then(() => { fetchUsers(); });
-//   } catch (error) {
-//     console.log('Something went wrong while storing in firestore.', error);
-//   }
-//   return ({
-//     type: ADD_FAVORITE,
-//     payload: favs,
-//   })
-// };
-
-// export const fetchUsers = async isFetched => {
-//   console.log({ user, favorites, item });
-//   try {
-//     let user = await ref.doc(user).get();
-//     console.log("user:::::::::  ", user.users);
-//     return dispatch => {  // TODO: fix warning
-//       isFetched ? isFetched() : null;
-//       console.log('isFetched :>> ', user);
-
-//       dispatch({
-//         type: FETCH_USERS,
-//         payload: { user, favorites, item }
-//           .data()
-//         // .users?.sort((a, b) => a.user < b.user)
-//       });
-//     };
-//   } catch (error) {
-//     console.log('Something went wrong while fetching from firestore.', error);
-//   }
-// };
-
-export const filterData = (user, favorites, item) => {
-  return (dispatch) => {
-    try {
-      ref.get()
-        .then((querySnapshot) => {
-          let data = [];
-          querySnapshot.forEach((user) => {
-            // console.log('item', item)
-            data.push({ isFavorite: false, item, ...favorites });
-          });
-          // console.log('data', data)
-          dispatch({ type: FILTER_DATA, payload: data });
-        });
-    } catch (error) {
-      console.log('Something went wrong while storing in firestore.', error);
-    }
-  };
-};
-
-export const storeDataaaaa = async (user, favorites, item) => {
-  return (dispatch) => {
-    try {
-      console.log({ favorites })
-      console.log({ item })
-      const favoriteIndex = favorites.findIndex(
-        favorite => favorite.title === item.title
-      );
-      // console.log('favoriteIndex', favoriteIndex)
-      if (favoriteIndex < 0) {
-
-        // ref.get()
-        // .then((querySnapshot) => {
-        //   let data = [];
-        //   querySnapshot.forEach((user) => {
-        //     // console.log('item', item)
-        //     data.push({ isFavorite: false, item, ...favorites });
-        //   });
-        //   // console.log('data', data)
-        dispatch({ type: FILTER_DATA, payload: data });
-        // });
-      } else {
-        ref.doc(user).update({
-          favorites: [{ isFavorite: true, item }, ...favorites],
-        })
-        dispatch({
-          type: FETCH_DATA, payload: favorites,
-        });
-      }
-    } catch (error) {
-      console.log('Something went wrong while storing in firestore.', error);
-    }
-  };
+export const setFavorites = (payload) => {
+  ref.doc(payload)
+  return ({
+    type: SET_FAVORITES,
+    payload,
+  });
 }
 
+export const setLoading = (payload) => ({
+  type: SET_LOADING,
+  payload,
+});
+
 export const storeData = async (user, favorites, item) => {
-  console.log({ favorites })
-  console.log({ item })
+  // console.log({ favorites })
+  // console.log({ item })
   const favoriteIndex = favorites.findIndex(
     favorite => favorite.title === item.title
   );
@@ -203,11 +74,14 @@ export const storeData = async (user, favorites, item) => {
     if (favoriteIndex < 0) {
       firestore().collection('users').doc(user).update({
         favorites: [item, ...favorites],
-      })
-      return ({
-        type: FETCH_DATA,
-        payload: [item, ...favorites]
-      })
+      }).then(() => { 
+        // fetchFavorites(); 
+        setFavorites(user) });
+      // return ({
+      //     type: FETCH_DATA,
+      //     payload: [item, ...favorites]
+      //   })
+      // })
     }
     else {
       await ref.update({
@@ -234,16 +108,16 @@ export const fetchFavorites = async isFetched => {
     let favorites = await ref.doc('liorkasti@gmail.com').get();
     // console.log('favorites', ref.doc(user).get())
     // console.log(favorites.data());
+    console.log('isFetched :>> ', isFetched);
     return dispatch => {  // TODO: fix warning
       isFetched ? isFetched() : null;
-      console.log('isFetched :>> ', isFetched);
 
       dispatch({
         type: FETCH_USERS,
         payload: favorites
           .data()
           .favorites?.sort((a, b) => a.published_at < b.published_at)
-          .slice(0, 20),
+        // .slice(0, 20),
       });
     };
   } catch (error) {
