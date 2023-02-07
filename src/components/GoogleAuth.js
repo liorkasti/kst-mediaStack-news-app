@@ -13,6 +13,7 @@ const GoogleAuth = () => {
     const [userInfo, setUserInfo] = useState();
     const isDarkMode = useColorScheme() === 'dark';
     const { user, favorites, loading } = useSelector(state => state.reducers);
+    console.log({ user, favorites, loading });
 
     const dispatch = useDispatch();
 

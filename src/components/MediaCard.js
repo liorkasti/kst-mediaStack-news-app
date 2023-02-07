@@ -27,9 +27,9 @@ const MediaCard = ({ data }) => {
       )
       console.log('Index :>> ', favoriteIndex);
       if (favoriteIndex < 0) {
-        dispatch(storeData(user, favorites, item))
+        dispatch(await storeData(user, favorites, item))
       } else {
-        dispatch(removeData(user, favorites, favoriteIndex))
+        dispatch(await removeData(user, favorites, favoriteIndex))
       }
 
     } else { Alert.alert('Oops!', 'Please sign in first.') }

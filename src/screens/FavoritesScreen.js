@@ -35,7 +35,7 @@ const FavoritesScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (user) dispatch(fetchData(user, favorites, loading));
-    console.log({ user, favorites, loading });
+    // console.log({ user, favorites, loading });
   }, []);
 
   const listEmptyComponent = () => {

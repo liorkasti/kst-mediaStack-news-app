@@ -83,7 +83,7 @@ export const storeData = async (user, favorites, item) => {
       fetchFavorites(user);
     });
   } catch (error) {
-    console.log('Something went wrong while fetching from firestore.', error);
+    console.log('Store: Something went wrong while fetching from firestore.', error);
   }
 }
 
@@ -97,7 +97,7 @@ export const removeData = async (user, favorites, item) => {
       fetchFavorites(user);
     })
   } catch (error) {
-    console.log('Something went wrong while fetching from firestore.', error);
+    console.log('Remove: Something went wrong while fetching from firestore.', error);
   }
 }
 
