@@ -59,52 +59,64 @@ export const setFavorites = async (payload) => {
   });
 }
 
+export const getData = async (user, favorites, item) => {
+  try {
+    await ref.doc(user).update({
+      favorites: [item, ...favorites],
+      // favorites: firestore.FieldValue.arrayUnion(favorites)
+    }).then(() => { fetchFavorites(user); });
+  } catch (error) {
+    console.log('Something went wrong while storing in firestore.', error);
+  }
+};
+
 export const setLoading = (payload) => ({
   type: SET_LOADING,
   payload,
 });
 
 export const storeData = async (user, favorites, item) => {
-  // console.log({ favorites })
-  // console.log({ item })
-  const favoriteIndex = favorites.findIndex(
-    favorite => favorite.title === item.title
-  );
-  console.log('favoriteIndex', favoriteIndex)
   try {
-    if (favoriteIndex < 0) {
-      firestore().collection('users').doc(user).update({
-        favorites: [item, ...favorites],
-      }).then(() => {
-        // dispatch({ type: FILTER_DATA, payload: data });
-        filterFavorites(user);
-        // setFavorites(user)
-      });
-      // return ({
-      //     type: FETCH_DATA,
-      //     payload: [item, ...favorites]
-      //   })
-      // })
-    }
-    else {
-      await ref.update({
-        favorites: firestore.FieldValue.delete({ item })
-      }).then(() => { fetchFavorites(); });
-    }
+    await firestore().collection('users').doc(user).update({
+      favorites: [item, ...favorites],
+    }).then(() => {
+      fetchFavorites(user);
+    });
   } catch (error) {
     console.log('Something went wrong while fetching from firestore.', error);
   }
 }
 
-export const getData = async (user, favorites, item) => {
+export const removeData = async (user, favorites, item) => {
   try {
-    await ref.doc(user).update({
-      favorites: firestore.FieldValue.arrayUnion(favorites)
-    }).then(() => { fetchFavorites(user); });
+    await firestore().collection('users').doc(user).update({
+      // [favorites]: firestore().FieldValue.delete()
+      [`favorites.${item}`]: firestore().FieldValue.delete()
+      // favorites: firestore().FieldValue.delete({item})
+    }).then(() => {
+      fetchFavorites(user);
+    })
   } catch (error) {
-    console.log('Something went wrong while storing in firestore.', error);
+    console.log('Something went wrong while fetching from firestore.', error);
   }
-};
+}
+
+// export const filterFavorites = async (user) => {
+//   try {
+//     let favorites = await ref.doc(user).get();
+//     return dispatch => {  // TODO: fix warning
+
+//       dispatch({
+//         type: FILTER_DATA,
+//         payload: favorites
+//           .data()
+//           .favorites?.sort((a, b) => a.published_at > b.published_at)
+//       });
+//     };
+//   } catch (error) {
+//     console.log('Something went wrong while fetching from firestore.', error);
+//   }
+// };
 
 export const fetchFavorites = async (user) => {
   try {
@@ -114,24 +126,7 @@ export const fetchFavorites = async (user) => {
         type: FETCH_USERS,
         payload: favorites
           .data()
-          .favorites?.sort((a, b) => a.published_at < b.published_at)
-      });
-    };
-  } catch (error) {
-    console.log('Something went wrong while fetching from firestore.', error);
-  }
-};
-
-export const filterFavorites = async (user) => {
-  try {
-    let favorites = await ref.doc(user).get();
-    return dispatch => {  // TODO: fix warning
-
-      dispatch({
-        type: FILTER_DATA,
-        payload: favorites
-          .data()
-          .favorites?.sort((a, b) => a.published_at < b.published_at)
+          .favorites?.sort((a, b) => a.published_at > b.published_at)
       });
     };
   } catch (error) {

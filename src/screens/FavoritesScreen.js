@@ -24,7 +24,7 @@ const FavoritesScreen = ({ navigation }) => {
 
   const handleSelection = category => {
     if (user) {
-      dispatch(getData(user, favorites, loading)).then(setNewsData(favorites))
+      dispatch(fetchData(user, favorites, loading)).then(setNewsData(favorites))
     }
     console.log({ user, favorites, loading })
   }
@@ -34,7 +34,7 @@ const FavoritesScreen = ({ navigation }) => {
   }, [selected]);
 
   useEffect(() => {
-    if (user) dispatch(getData(user, favorites, loading));
+    if (user) dispatch(fetchData(user, favorites, loading));
     console.log({ user, favorites, loading });
   }, []);
 

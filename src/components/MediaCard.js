@@ -5,7 +5,7 @@ import { THEME } from '../constants/theme'
 import LottieView from 'lottie-react-native';
 import { useQuery } from 'react-query';
 import { useSelector, useDispatch } from 'react-redux';
-import { toggleFavorite, storeData, filterData } from '../redux/actions'
+import { toggleFavorite, storeData, removeData, filterData } from '../redux/actions'
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -13,7 +13,6 @@ import { ref } from '../constants/firebase.utils';
 import Icon from 'react-native-vector-icons/Fontisto';
 
 const MediaCard = ({ data }) => {
-  const [isBooked, setIsBooked] = useState(false);
   // const { data: news, isLoading } = useQuery(newsQuery);
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -23,45 +22,67 @@ const MediaCard = ({ data }) => {
 
   const toggle = async (item) => {
     if (user) {
-      dispatch(storeData(user, favorites, item))
-      if (favoriteIndex >= 0) setIsBooked(true)
+      const favoriteIndex = favorites.findIndex(
+        favorite => favorite.title === item.title
+      )
+      console.log('Index :>> ', favoriteIndex);
+      if (favoriteIndex < 0) {
+        dispatch(storeData(user, favorites, item))
+      } else {
+        dispatch(removeData(user, favorites, favoriteIndex))
+      }
+
     } else { Alert.alert('Oops!', 'Please sign in first.') }
   }
+
+  const renderCardItem = (item) => {
+    const favoriteIndex = favorites.findIndex(
+      favorite => favorite.title === item.title
+    )
+    let isBooked = false
+    if (favoriteIndex < 0) {
+      isBooked = false
+    } else {
+      isBooked = true
+    }
+    return (
+      <View>
+        <Pressable onPress={() => toggle(item)} style={styles.like}
+          hitSlop={{ top: 20, bottom: 20, left: 50, right: 50 }}
+        >
+          {isBooked ?
+            <Icon name='bookmark-alt' style={styles.iconActive} />
+            :
+            <Icon name='bookmark' style={styles.icon} />
+          }
+        </Pressable>
+        <Text style={styles.articleTitle}>{item.title}</Text>
+        <Text style={styles.date}>{item.category}</Text>
+        <View style={styles.newsContainer}>
+          {item.image && (
+            <Image
+              source={{ uri: item.image }}
+              style={styles.imagePoster}
+              resizeMode='cover'
+            />
+          )}
+          <Text style={styles.author}>{item.author}</Text>
+          <Text style={styles.date}>
+            {moment(item.published_at).format("LLL")}
+          </Text>
+          <Text style={[styles.summaryText, { color: isDarkMode ? THEME.mediaLight : THEME.darkBkg }]}>{item.description}</Text>
+        </View>
+        <View style={styles.divider} />
+      </View >
+    );
+  };
 
   return (
     <FlatList
       style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}
       data={data}
       renderItem={({ item }) => (
-        <View>
-          <Pressable onPress={() => toggle(item)} style={styles.like}
-            hitSlop={{ top: 20, bottom: 20, left: 50, right: 50 }}
-            >
-            {isBooked ?
-              <Icon name='bookmark-alt' style={styles.iconActive} />
-              :
-              <Icon name='bookmark' style={styles.icon} />
-            }
-          </Pressable>
-          <Text style={styles.articleTitle}>{item.title}</Text>
-          <Text style={styles.date}>{item.category}</Text>
-          <View style={styles.newsContainer}>
-            {item.image && (
-              <Image
-                source={{ uri: item.image }}
-                style={styles.imagePoster}
-                resizeMode='cover'
-              />
-            )}
-            <Text style={styles.author}>{item.author}</Text>
-            <Text style={styles.date}>
-              {moment(item.published_at).format("LLL")}
-            </Text>
-            <Text style={[styles.summaryText, { color: isDarkMode ? THEME.mediaLight : THEME.darkBkg }]}>{item.description}</Text>
-          </View>
-          <View style={styles.divider} />
-
-        </View >
+        renderCardItem(item)
       )}
       keyExtractor={(item) => item.url}
     />
