@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import MediaCard from '../components/MediaCard';
 import { CATEGORIES } from '../constants/categories';
 import { fetchData, useFetchMediaStack } from '../hooks/useFetch';
-import { fetchFavorites, getData } from '../redux/actions'
+import { fetchFavorites, setFavorites, getData } from '../redux/actions'
 
 const CategoriesScreen = ({ navigation }) => {
   const [newsData, setNewsData] = useState([]);
@@ -30,7 +30,7 @@ const CategoriesScreen = ({ navigation }) => {
   }, [selected]);
 
   useEffect(() => {
-    if (user) dispatch(fetchFavorites());
+    if (user) dispatch(setFavorites(user));
     console.log({ user, favorites, loading });
   }, [loading]);
 

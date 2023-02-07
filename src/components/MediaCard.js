@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, Pressable, useColorScheme, Image } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Pressable,Alert, useColorScheme, Image } from 'react-native';
 import moment from "moment";
 import { THEME } from '../constants/theme'
 import LottieView from 'lottie-react-native';
@@ -10,14 +10,26 @@ import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { ref } from '../constants/firebase.utils';
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from 'react-native-vector-icons/Fontisto';
 
 const MediaCard = ({ data }) => {
+  const [isBooked, setIsBooked] = useState(false);
   // const { data: news, isLoading } = useQuery(newsQuery);
   const isDarkMode = useColorScheme() === 'dark';
 
   const dispatch = useDispatch();
   const { user, favorites, loading } = useSelector(state => state.reducers);
+  // console.log({ user, favorites, loading });
+
+  const toggle = async (item) => {
+    if(user){
+      dispatch(storeData(user, favorites, item))
+      const favoriteIndex = favorites.findIndex(
+        favorite => favorite.title === item.title
+      );
+      setIsBooked(true)
+    }else{Alert.alert('Oops!','Please sign in first.')}
+  }
 
   return (
     <FlatList
@@ -25,12 +37,12 @@ const MediaCard = ({ data }) => {
       data={data}
       renderItem={({ item }) => (
         <View>
-          <Pressable onPress={() => toggleHeart(item)} style={styles.like}>
-            <LottieView
-              // progress={progress}
-              source={require('../assets/feed_heart.json')}
-              style={styles.lottie}
-            />
+          <Pressable onPress={() => toggle(item)} style={styles.like}>
+          {isBooked ?
+                    <Icon name='bookmark-alt' style={styles.iconActive} />
+                    :
+                    <Icon name='bookmark' style={styles.icon} />
+                }
           </Pressable>
           <Text style={styles.articleTitle}>{item.title}</Text>
           <Text style={styles.date}>{item.category}</Text>

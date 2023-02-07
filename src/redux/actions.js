@@ -74,9 +74,10 @@ export const storeData = async (user, favorites, item) => {
     if (favoriteIndex < 0) {
       firestore().collection('users').doc(user).update({
         favorites: [item, ...favorites],
-      }).then(() => { 
-        // fetchFavorites(); 
-        setFavorites(user) });
+      }).then(() => {
+        fetchFavorites(); 
+        setFavorites(user)
+      });
       // return ({
       //     type: FETCH_DATA,
       //     payload: [item, ...favorites]
@@ -108,9 +109,9 @@ export const fetchFavorites = async isFetched => {
     let favorites = await ref.doc('liorkasti@gmail.com').get();
     // console.log('favorites', ref.doc(user).get())
     // console.log(favorites.data());
-    console.log('isFetched :>> ', isFetched);
     return dispatch => {  // TODO: fix warning
       isFetched ? isFetched() : null;
+      console.log('isFetched :>> ', isFetched);
 
       dispatch({
         type: FETCH_USERS,
