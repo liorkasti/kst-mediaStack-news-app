@@ -21,30 +21,13 @@ const GoogleAuth = () => {
         webClientId: '770326205412-qpsq599n60j6m4g7dhnmgubef0bsrbkf.apps.googleusercontent.com',
     });
 
-    //TODO: fix signout 
-    // auth().onAuthStateChanged((user) => {
-    //     if (user) {
-    //         setUserInfo(user);
-    //         // dispatch(login(userInfo))
-    //         // dispatch(storeData(user.email, favorites = null));
-    //     } else {
-    //         setUserInfo(null);
-    //         dispatch(logout());
-    //     }
-    // });
-    // useEffect(() => {
-    //     if (user) {
-    //         setUserInfo(user)
-    //     } else { null }
-    //     return () => { setUserInfo(user || null) };
-    // }, [userInfo]);
-
-    const logoff = async () => {
+    const signOut = async () => {
         try {
-            auth().signOut();
-            setUserInfo(null);
-            dispatch(await logout(dispatch(setLoading(false), () =>
-                dispatch(fetchFavorites(null)))));
+            await GoogleSignin.revokeAccess();
+            await GoogleSignin.signOut();
+            dispatch(await logout(dispatch(setLoading(false),
+                () => dispatch(fetchFavorites())
+            )));
             console.log('User signed out!');
         } catch (error) {
             console.error(error);
@@ -55,7 +38,6 @@ const GoogleAuth = () => {
         try {
             const { idToken, user } = await GoogleSignin.signIn();
             const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-            // const result = await firebase.auth().signInWithPopup(provider);
 
             await GoogleSignin.hasPlayServices();
             if (user) {
@@ -64,7 +46,6 @@ const GoogleAuth = () => {
                     dispatch(setLoading(true), () =>
                         dispatch(fetchFavorites(user.email)))
                 ))
-                // dispatch(storeData(user.email, favorites = null))
             }
             return user;
         } catch (error) {
@@ -98,7 +79,7 @@ const GoogleAuth = () => {
     } return (
         <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>
             <TouchableOpacity
-                onPress={() => logoff()}
+                onPress={() => signOut()}
                 title="Google Sign-Out"
                 color={GoogleSigninButton.Color.Dark}
                 size={GoogleSigninButton.Size.Standard}

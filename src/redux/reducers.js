@@ -44,6 +44,12 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         user: null,
+        favorites: []
+      };
+    case SET_FAVORITES:
+      return {
+        ...state,
+        favorites: null,
       };
     case GETUSER:
       return ({
