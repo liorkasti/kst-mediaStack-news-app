@@ -1,9 +1,4 @@
-export const TOGGLE_FAVORITE = 'TOGGLE_FAVORITE';
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const FETCH_DATA = 'FETCH_DATA';
-export const FILTER_DATA = 'FILTER_DATA';
-export const SET_FAVORITES = 'SET_FAVORITES';
 export const SET_LOADING = 'SET_LOADING';
-export const GETUSER = 'GETUSER';
-export const FETCH_USERS = 'FETCH_USERS';

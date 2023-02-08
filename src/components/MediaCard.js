@@ -30,13 +30,14 @@ const MediaCard = ({ data }) => {
       )
       console.log('Index :>> ', favoriteIndex);
       if (favoriteIndex < 0) {
-        dispatch(await storeData(user, favorites, item,
+        setBooked(true)
+        dispatch(storeData(user, favorites, item,
           () => dispatch(fetchFavorites(user))))
-        // setBooked(true)
       } else {
-        dispatch(await removeData(user, favorites, item,
+        setBooked(false)
+        //TODO: Fix remove
+        dispatch(removeData(user, favorites, item,
           () => dispatch(fetchFavorites(user))))
-        // setBooked(false)
       }
     } else { Alert.alert('Oops!', 'Please sign in first.') }
   }
@@ -62,7 +63,7 @@ const MediaCard = ({ data }) => {
         <Pressable onPress={() => toggle(item)} style={styles.like}
           hitSlop={{ top: 20, bottom: 20, left: 50, right: 50 }}
         >
-          {isBooked ?
+          {isBooked + booked ?
             <Icon name='bookmark-alt' style={styles.iconActive} />
             :
             <Icon name='bookmark' style={styles.icon} />

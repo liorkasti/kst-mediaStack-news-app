@@ -1,15 +1,6 @@
-import { combineReducers } from 'redux';
-
 import {
-  TOGGLE_FAVORITE,
-  LOGIN,
-  LOGOUT,
-  FETCH_DATA,
-  FILTER_DATA,
-  SET_FAVORITES,
-  SET_LOADING,
-  GETUSER,
-  FETCH_USERS
+  FETCH_DATA, LOGIN,
+  LOGOUT, SET_LOADING
 } from './types';
 
 const initialState = {
@@ -28,13 +19,6 @@ const reducers = (state = initialState, action) => {
         ...state,
         favorites: payload
       };
-    case FILTER_DATA:
-      return {
-        ...state,
-        // favorites: payload
-        favorites: state.favorites.filter(
-          (item) => item.title === payload.title)
-      };
     case LOGIN:
       return {
         ...state,
@@ -45,26 +29,6 @@ const reducers = (state = initialState, action) => {
         ...state,
         user: null,
         favorites: []
-      };
-    case SET_FAVORITES:
-      return {
-        ...state,
-        favorites: null,
-      };
-    case GETUSER:
-      return ({
-        ...state, user:
-          action.user
-      })
-    case FETCH_USERS:
-      return {
-        ...state,
-        favorites: payload
-      };
-    case SET_FAVORITES:
-      return {
-        ...state,
-        favorites: payload,
       };
     case SET_LOADING:
       return {

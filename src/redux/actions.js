@@ -1,23 +1,11 @@
 import firestore from '@react-native-firebase/firestore';
-// import firebase from 'firebase';
-import { doc, updateDoc, deleteField } from '@react-native-firebase/firestore';
-
-import { ref, user } from '../constants/firebase.utils';
+import { ref } from '../constants/firebase.utils';
 import {
-  TOGGLE_FAVORITE,
-  LOGIN,
-  LOGOUT,
-  FETCH_DATA,
-  FILTER_DATA,
-  SET_FAVORITES,
-  SET_LOADING,
-  GETUSER,
-  FETCH_USERS
+  FETCH_DATA, LOGIN,
+  LOGOUT, SET_LOADING
 } from './types';
-import { useDispatch, useSelector } from 'react-redux';
 
 export const logout = async (callback) => dispatch => {
-  // console.log('payload :>> ', payload);
   ref.doc(null);
   callback ? callback() : null;
   dispatch({
@@ -26,8 +14,7 @@ export const logout = async (callback) => dispatch => {
 }
 export const login = async (payload, callback) => dispatch => {
   try {
-    ref.doc(payload).set({favorites:''}, {merge: true})
-    // ref.doc(payload).update('favorites')
+    ref.doc(payload).set({ favorites: 'recover' }, { merge: true })
     callback ? callback() : null;
     dispatch({
       type: LOGIN,
@@ -60,7 +47,13 @@ export const storeData = async (user, favorites, item, callback) => {
 
 export const removeData = async (user, favorites, item, callback) => {
   try {
-    await ref.doc(payload).set({ favorites: favorites.slice(item, 1) })
+    ref.doc(user).update({
+      favorites: favorites.filter(
+        i => i.title !== item.title
+      )
+    })
+    // ref.doc(user).update({ favorites: firestore.FieldValue.delete({item}), })
+    // await ref.doc(payload).set({ favorites: favorites.slice(item, 1) })
     callback ? callback() : null;
   } catch (error) {
     console.log('Remove: Something went wrong while fetching from firestore.', error);
@@ -73,7 +66,7 @@ export const fetchFavorites = async (user, didLoad) => {
     return dispatch => {
       didLoad ? didLoad() : null;
       dispatch({
-        type: FETCH_USERS,
+        type: FETCH_DATA,
         payload: favorites
           .data()
           .favorites?.sort((a, b) => a.published_at > b.published_at)
@@ -83,13 +76,3 @@ export const fetchFavorites = async (user, didLoad) => {
     console.log('Something went wrong while fetching from firestore.', error);
   }
 };
-
-export async function fetch(user, dispatch) {
-  let favorites = await ref.doc(user).get();
-  dispatch({
-    type: FETCH_USERS,
-    payload: favorites
-      .data()
-      .favorites?.sort((a, b) => a.published_at > b.published_at)
-  });
-}
