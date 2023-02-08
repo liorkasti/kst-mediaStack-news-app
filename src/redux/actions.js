@@ -26,14 +26,15 @@ export const logout = async (callback) => dispatch => {
 }
 export const login = async (payload, callback) => dispatch => {
   try {
-    ref.doc(payload).update({ favorites: [] }, true)
+    ref.doc(payload).set({favorites:''}, {merge: true})
+    // ref.doc(payload).update('favorites')
     callback ? callback() : null;
     dispatch({
       type: LOGIN,
       payload,
     });
   } catch (error) {
-    console.log('Remove: Something went wrong while fetching from firestore.', error);
+    console.log('login: Something went wrong while fetching from firestore.', error);
   }
 }
 
