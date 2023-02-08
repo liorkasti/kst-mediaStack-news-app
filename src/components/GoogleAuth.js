@@ -44,13 +44,9 @@ const GoogleAuth = () => {
                 setUserInfo(user);
                 dispatch(await login(user.email,
                     () => dispatch(setLoading(true),
-                        () => dispatch(fetchFavorites(user.email)))
-                ))
+                        () => dispatch(fetchFavorites(user.email))
+                )))
             }
-            // const users = auth().signInWithCredential(googleCredential);
-            // users.then((user) => {
-            //     ref.doc(user);
-            // })
             return user;
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {

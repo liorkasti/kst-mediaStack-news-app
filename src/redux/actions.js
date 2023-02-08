@@ -26,8 +26,7 @@ export const logout = async (callback) => dispatch => {
 }
 export const login = async (payload, callback) => dispatch => {
   try {
-    // console.log('payload :>> ', payload);
-    ref.doc(payload);
+    ref.doc(payload).update({ favorites: [] }, true)
     callback ? callback() : null;
     dispatch({
       type: LOGIN,
@@ -53,17 +52,14 @@ export const storeData = async (user, favorites, item, callback) => {
     })
     callback ? callback() : null;
   } catch (error) {
+    ref.doc(payload).set({ favorites: [item, ...favorites] })
     console.log('Store: Something went wrong while fetching from firestore.', error);
   }
 }
 
 export const removeData = async (user, favorites, item, callback) => {
   try {
-    await ref.doc(user).update({
-      // [favorites]: firestore().FieldValue.delete()
-      // [`favorites.${item}`]: firestore().FieldValue.delete()
-      favorites: firestore().FieldValue.delete({ item })
-    })
+    await ref.doc(payload).set({ favorites: favorites.slice(item, 1) })
     callback ? callback() : null;
   } catch (error) {
     console.log('Remove: Something went wrong while fetching from firestore.', error);
