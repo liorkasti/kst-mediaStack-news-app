@@ -31,11 +31,11 @@ const MediaCard = ({ data }) => {
       console.log('Index :>> ', favoriteIndex);
       if (favoriteIndex < 0) {
         dispatch(await storeData(user, favorites, item,
-          () => dispatch(fetchFavorites)))
+          () => dispatch(fetchFavorites(user))))
         // setBooked(true)
       } else {
         dispatch(await removeData(user, favorites, item,
-          () => dispatch(fetchFavorites)))
+          () => dispatch(fetchFavorites(user))))
         // setBooked(false)
       }
     } else { Alert.alert('Oops!', 'Please sign in first.') }
