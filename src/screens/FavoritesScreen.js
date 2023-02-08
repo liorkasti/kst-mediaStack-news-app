@@ -1,21 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, useColorScheme } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { useQuery } from 'react-query';
+import { useDispatch, useSelector } from 'react-redux';
 import MediaCard from '../components/MediaCard';
 import { CATEGORIES } from '../constants/categories';
-import { fetchData, useFetchMediaStack } from '../hooks/useFetch';
-import { fetchFavorites, setFavorites, getData } from '../redux/actions'
+import { fetchFavorites } from '../redux/actions';
 
 
 const FavoritesScreen = ({ navigation }) => {
   const [newsData, setNewsData] = useState([]);
   const [selected, setSelected] = useState([]);
   const isDarkMode = useColorScheme() === 'dark';
+
   const { user, favorites, loading } = useSelector(state => state.reducers);
+
   const emptyList = "Loading...";
   const title = "Please Sign in for retrieve your stored data";
+
+  // const memoizedValue = useMemo(() => {
+  //   if (user) {
+  //     dispatch(fetchFavorites(user)).then(setNewsData(favorites));
+  //   }
+  // })
+
+  // useEffect(() => {
+  //   memoizedValue()
+  // }, [user, favorites]);
 
   const dispatch = useDispatch();
 
@@ -23,7 +33,6 @@ const FavoritesScreen = ({ navigation }) => {
     if (user) {
       dispatch(fetchFavorites(user)).then(setNewsData(favorites))
     }
-    console.log({ user, favorites, loading })
   }
 
   useEffect(() => {
@@ -32,7 +41,6 @@ const FavoritesScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (user) dispatch(fetchFavorites(user));
-    // console.log({ user, favorites, loading });
   }, []);
 
   const listEmptyComponent = () => {

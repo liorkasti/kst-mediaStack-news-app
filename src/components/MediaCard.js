@@ -1,43 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, Pressable, Alert, useColorScheme, Image } from 'react-native';
-import moment from "moment";
-import { THEME } from '../constants/theme'
-import LottieView from 'lottie-react-native';
-import { useQuery } from 'react-query';
-import { useSelector, useDispatch } from 'react-redux';
-import { toggleFavorite, storeData, removeData, filterData, fetchFavorites } from '../redux/actions'
-import database from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import { ref } from '../constants/firebase.utils';
-import Icon from 'react-native-vector-icons/Fontisto';
 import { useRoute } from '@react-navigation/native';
+import moment from "moment";
+import React, { useState } from 'react';
+import { Alert, FlatList, Image, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import Icon from 'react-native-vector-icons/Fontisto';
+import { useDispatch, useSelector } from 'react-redux';
+import { THEME } from '../constants/theme';
+import { fetchFavorites, removeData, storeData } from '../redux/actions';
 
 const MediaCard = ({ data }) => {
   const [booked, setBooked] = useState(false);
-  // const { data: news, isLoading } = useQuery(newsQuery);
   const isDarkMode = useColorScheme() === 'dark';
   const route = useRoute();
 
   const dispatch = useDispatch();
   const { user, favorites, loading } = useSelector(state => state.reducers);
-  // console.log('MediaCard>> ', { user, favorites, loading });
-
+  
   const toggle = async (item) => {
     if (user) {
-      const favoriteIndex = favorites.findIndex(
+      const favoriteIndex = favorites?.findIndex(
         favorite => favorite.title === item.title
       )
-      console.log('Index :>> ', favoriteIndex);
       if (favoriteIndex < 0) {
         setBooked(true)
         dispatch(storeData(user, favorites, item,
           () => dispatch(fetchFavorites(user))))
       } else {
         setBooked(false)
-        //TODO: Fix remove
-        dispatch(removeData(user, favorites, item,
-          () => dispatch(fetchFavorites(user))))
+        dispatch(removeData(user, favorites, item));
       }
     } else { Alert.alert('Oops!', 'Please sign in first.') }
   }

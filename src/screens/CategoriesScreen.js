@@ -5,11 +5,12 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import { useQuery } from 'react-query';
 import MediaCard from '../components/MediaCard';
 import { CATEGORIES } from '../constants/categories';
-import { fetchData, useFetchMediaStack } from '../hooks/useFetch';
+import { fetchData, useFetchMediaStack, useNews } from '../hooks/useFetch';
 import { fetchFavorites, setFavorites, getData } from '../redux/actions'
 
 const CategoriesScreen = ({ navigation }) => {
   const [newsData, setNewsData] = useState([]);
+  const [news, setNews] = useState([]);
   const [selected, setSelected] = useState([]);
   const isDarkMode = useColorScheme() === 'dark';
   const { user, favorites, loading } = useSelector(state => state.reducers);
@@ -32,20 +33,8 @@ const CategoriesScreen = ({ navigation }) => {
   useEffect(() => {
     if (user) {
       dispatch(fetchFavorites(user))
-      // console.log({ user, favorites, loading });
     };
   }, [user]);
-
-  // const onSuccess = (data) => { console.log('data :>> ', data); }
-  // const onError = (error) => { console.log('error :>> ', error); }
-  // const { isLoading, data, isError, error, isFetching, refresh } = (error) => useFetchMediaStack(selected, 'us', onSuccess, onError);
-  // console.log('RQ :>> ', data);
-  // console.log(isLoading, isFetching, data);
-  // if (isLoading || isFetching) return (
-  //   <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-  //     <ActivityIndicator />
-  //   </View>
-  // );
 
   return (
     <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>

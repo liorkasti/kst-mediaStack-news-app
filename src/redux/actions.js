@@ -48,12 +48,10 @@ export const storeData = async (user, favorites, item, callback) => {
 export const removeData = async (user, favorites, item, callback) => {
   try {
     ref.doc(user).update({
-      favorites: favorites.filter(
-        i => i.title !== item.title
+      favorites: favorites?.filter(
+        i => i?.title !== item?.title
       )
     })
-    // ref.doc(user).update({ favorites: firestore.FieldValue.delete({item}), })
-    // await ref.doc(payload).set({ favorites: favorites.slice(item, 1) })
     callback ? callback() : null;
   } catch (error) {
     console.log('Remove: Something went wrong while fetching from firestore.', error);
