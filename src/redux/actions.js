@@ -14,7 +14,7 @@ export const logout = async (callback) => dispatch => {
 }
 export const login = async (payload, callback) => dispatch => {
   try {
-    ref.doc(payload).set({ favorites: 'recover' }, { merge: true })
+    ref.doc(payload).set({foo:'bar'}, { merge: true })
     callback ? callback() : null;
     dispatch({
       type: LOGIN,
