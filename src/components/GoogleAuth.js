@@ -42,11 +42,15 @@ const GoogleAuth = () => {
             await GoogleSignin.hasPlayServices();
             if (user) {
                 setUserInfo(user);
-                dispatch(await login(user.email, () =>
-                    dispatch(setLoading(true), () =>
-                        dispatch(fetchFavorites(user.email)))
+                dispatch(await login(user.email,
+                    () => dispatch(setLoading(true),
+                        () => dispatch(fetchFavorites(user.email)))
                 ))
             }
+            // const users = auth().signInWithCredential(googleCredential);
+            // users.then((user) => {
+            //     ref.doc(user);
+            // })
             return user;
         } catch (error) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -63,6 +67,38 @@ const GoogleAuth = () => {
             }
         }
     }
+
+    const signin = async () => {
+        try {
+            const { idToken, user } = await GoogleSignin.signIn();
+            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+            await GoogleSignin.hasPlayServices();
+            if (user) {
+                console.log("GOOGLE USER", user);
+                setUserInfo(user);
+                dispatch(login(user))
+                // //TODO: fetchFavorites(),
+            }
+            // const users = await auth().signInWithCredential(googleCredential);
+            // users.then((user) => { console.log('user :>> ', user); })
+
+            return user;
+        } catch (error) {
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+            } else {
+                if (error.code === 'auth/email-already-in-use') {
+                    console.log('That email address is already in use!');
+                }
+                if (error.code === 'auth/invalid-email') {
+                    console.log('That email address is invalid!');
+                }
+                console.error(error);
+            }
+        }
+    }
+
 
     if (!userInfo || !loading) {
         return (
