@@ -1,23 +1,24 @@
 import { API_KEY, BASE_URL, country } from "../constants/api";
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import dummy from '../constants/dummy.json'
 
 export const fetchData = async (category = "general", country = "us") => {
-    var requestOptions = {
-        method: "GET",
-        redirect: "follow",
-    };
+    // var requestOptions = {
+    //     method: "GET",
+    //     redirect: "follow",
+    // };
 
-    let articles = await axios.get(`${BASE_URL}?access_key=${API_KEY}&categories=${category}&countries=${country}`,
-        requestOptions
-    );
-    let result = await articles;
-    articles = null;
-    return result.data;
+    // let articles = await axios.get(`${BASE_URL}?access_key=${API_KEY}&categories=${category}&countries=${country}`,
+    //     requestOptions
+    // );
+    // let result = await articles;
+    // articles = null;
+    return dummy;
 };
 
-export const useFetchMediaStack = (category = "general", country = "us", onSuccess, onError) => {    
-    const res = useQuery(['result',category], fetchData)
+export const useFetchMediaStack = async (category = "general", country = "us", onSuccess, onError) => {
+    const res = useQuery(['article', category], fetchData)
     console.log('object :>> ', res);
     console.log('object :>> ', category);
     return (

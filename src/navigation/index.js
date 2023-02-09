@@ -1,57 +1,38 @@
-import React, { useState } from "react";
-import { StyleSheet, Image, Text, View, TouchableOpacity, Dimensions } from "react-native";
-import auth from '@react-native-firebase/auth';
-import Login from '../components/Login';
-import { createStackNavigator } from '@react-navigation/stack';
-import TabContainer from './TabContainer';
-
-const Stack = createStackNavigator();
-
-const CustomHeader = ({ navigation }) => {
-    const [user, setUser] = useState();
-
-    return (
-        <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-                <Text style={styles.headerText}>Menu</Text>
-                <Text style={styles.headerText}>Menu</Text>
-                <Text style={styles.headerText}>Menu</Text>
-                <Text style={styles.headerText}>Menu</Text>
-            </TouchableOpacity>
-            <LoginScreen />
-            <GoogleSigninButton
-                onPress={() => onGoogleButtonPress()}
-                title="Google Sign-In"
-                style={styles.btnSocial}
-                color={GoogleSigninButton.Color.Dark}
-                size={GoogleSigninButton.Size.Standard}
-            />
-        </View>
-    );
-}
-
-const styles = StyleSheet.create({
-    headerContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 16
-    },
-    headerText: {
-        fontSize: 18,
-        color: 'black'
-    }
-});
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import React from 'react';
+import { CategoriesScreen, FavoritesScreen } from '../screens';
+import Icon from 'react-native-vector-icons/Fontisto';
+import { THEME } from '../constants/theme'
 
 export default () => {
+    const Tab = createMaterialBottomTabNavigator();
     return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="Categories"
-                component={TabContainer}
-                options={{ header: props => <CustomHeader {...props} /> }}
-            />
-        </Stack.Navigator>
+        <NavigationContainer>
+            <Tab.Navigator>
+                <Tab.Screen
+                    name="Categories"
+                    component={CategoriesScreen}
+                    options={{
+                        tabBarLabel: "Categories",
+                        tabBarColor: THEME.mediaGreen,
+                        tabBarIcon: ({ color }) => (
+                            <Icon name="world-o" color={color} size={20} />
+                        ),
+                    }}
+                />
+                <Tab.Screen
+                    name="Favorites"
+                    component={FavoritesScreen}
+                    options={{
+                        tabBarLabel: 'Favorites',
+                        tabBarColor: THEME.mediaGreen,
+                        tabBarIcon: ({ color }) => (
+                            <Icon name="favorite" color={color} size={20} />
+                        ),
+                    }}
+                />
+            </Tab.Navigator>
+        </NavigationContainer>
     );
 }

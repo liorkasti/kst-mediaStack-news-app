@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, useColorScheme } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { useQuery } from 'react-query';
 import MediaCard from '../components/MediaCard';
 import { CATEGORIES } from '../constants/categories';
-import { fetchData, useFetchMediaStack } from '../hooks/useFetch';
+import { fetchData, useFetchMediaStack, useNews } from '../hooks/useFetch';
+import { fetchFavorites, setFavorites, getData } from '../redux/actions'
 
 const CategoriesScreen = ({ navigation }) => {
   const [newsData, setNewsData] = useState([]);
+  const [news, setNews] = useState([]);
   const [selected, setSelected] = useState([]);
+  const isDarkMode = useColorScheme() === 'dark';
+  const { user, favorites, loading } = useSelector(state => state.reducers);
+  const dispatch = useDispatch();
 
   const handleSelection = category => {
     fetchData(category, 'us')
@@ -24,19 +30,21 @@ const CategoriesScreen = ({ navigation }) => {
     handleSelection(selected);
   }, [selected]);
 
-  // const onSuccess = (data) => { console.log('data :>> ', data); }
-  // const onError = (error) => { console.log('error :>> ', error); }
-  // const { isLoading, data, isError, error, isFetching, refresh } = (error) => useFetchMediaStack(selected, 'us', onSuccess, onError);
-  // console.log('RQ :>> ', data);
-  // console.log(isLoading, isFetching, data);
-  // if (isLoading || isFetching) return (
-  //   <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-  //     <ActivityIndicator />
-  //   </View>
-  // );
+  const memoizedValue = useMemo(() => {
+    if (user) {
+      dispatch(fetchFavorites(user)).then(setNewsData(favorites));
+    }
+  })
+
+  useEffect(async () => {
+    memoizedValue()
+    return () => {
+      memoizedValue()
+    };
+  }, [user]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>
       <SelectList
         setSelected={(val) => setSelected(val)}
         data={CATEGORIES}
@@ -54,7 +62,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
-    // backgroundColor: 'gray'
   },
 });
 

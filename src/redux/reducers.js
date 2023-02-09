@@ -1,20 +1,42 @@
-import { ADD_USER } from './types';
+import {
+  FETCH_DATA, LOGIN,
+  LOGOUT, SET_LOADING
+} from './types';
 
 const initialState = {
+  user: null,
+  users: [],
   favorites: [],
+  loading: false,
 };
 
 const reducers = (state = initialState, action) => {
   const { type, payload } = action;
-  switch (type) {
-    case ADD_USER:
-      const { userName, favorite } = payload;
-      console.log('payload :>> ', payload);
-      state.favorites.push(payload)
-      return { ...state, favorite: state.favorites };
 
+  switch (type) {
+    case FETCH_DATA:
+      return {
+        ...state,
+        favorites: payload
+      };
+    case LOGIN:
+      return {
+        ...state,
+        user: payload,
+      };
+    case LOGOUT:
+      return {
+        ...state,
+        user: null,
+        favorites: []
+      };
+    case SET_LOADING:
+      return {
+        ...state,
+        loading: payload,
+      };
     default:
-      return { ...state };
+      return state;
   }
 };
 

@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import Orientation from 'react-native-orientation-locker';
+import React, { useState, useEffect } from 'react';
 import {
   QueryClient,
   QueryClientProvider
@@ -7,21 +6,18 @@ import {
 import { Provider } from 'react-redux';
 import AppContainer from './navigation';
 import configureStore from './redux/store';
+import GoogleAuth from "./components/GoogleAuth";
 
 const App = () => {
-  const store = configureStore();
-  // console.log('store: ', store)
+  // console.log('store: ', configureStore.getState())
   const queryClient = new QueryClient()
 
-  useEffect(() => {
-    setTimeout(() => { Orientation.lockToPortrait(); });
-  });
-
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
+    <Provider store={configureStore}>
+      {/* <QueryClientProvider client={queryClient}> */}
+        <GoogleAuth />
         <AppContainer />
-      </QueryClientProvider>
+      {/* </QueryClientProvider> */}
     </Provider>
   );
 };
