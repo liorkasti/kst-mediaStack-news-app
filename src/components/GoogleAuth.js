@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, useColorScheme, View, Text, TouchableOpacity } from "react-native";
 import auth from '@react-native-firebase/auth';
-import { GoogleSignin, GoogleSigninButton, statusCodes, } from '@react-native-google-signin/google-signin';
-import { THEME } from '../constants/theme';
+import { GoogleSignin, GoogleSigninButton, statusCodes } from '@react-native-google-signin/google-signin';
+import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { useDispatch, useSelector } from 'react-redux';
-import { storeData, login, logout, fetchFavorites, setFavorites, setLoading, toggleFavorites } from '../redux/actions';
-import database from '@react-native-firebase/database';
-import firestore from '@react-native-firebase/firestore';
-import { ref, db } from '../constants/firebase.utils';
+import { THEME } from '../constants/theme';
+import { fetchFavorites, login, logout, setLoading } from '../redux/actions';
 
 const GoogleAuth = () => {
     const [userInfo, setUserInfo] = useState();

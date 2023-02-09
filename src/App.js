@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Orientation from 'react-native-orientation-locker';
 import {
   QueryClient,
   QueryClientProvider
