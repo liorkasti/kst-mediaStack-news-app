@@ -9,15 +9,14 @@ import configureStore from './redux/store';
 import GoogleAuth from "./components/GoogleAuth";
 
 const App = () => {
-  // console.log('store: ', configureStore.getState())
   const queryClient = new QueryClient()
 
   return (
     <Provider store={configureStore}>
-      {/* <QueryClientProvider client={queryClient}> */}
+      <QueryClientProvider client={queryClient}>
         <GoogleAuth />
         <AppContainer />
-      {/* </QueryClientProvider> */}
+      </QueryClientProvider>
     </Provider>
   );
 };

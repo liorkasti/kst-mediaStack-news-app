@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { StyleSheet, View, useColorScheme } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { SelectList } from 'react-native-dropdown-select-list';
@@ -13,8 +13,27 @@ const CategoriesScreen = ({ navigation }) => {
   const [news, setNews] = useState([]);
   const [selected, setSelected] = useState([]);
   const isDarkMode = useColorScheme() === 'dark';
+
   const { user, favorites, loading } = useSelector(state => state.reducers);
   const dispatch = useDispatch();
+
+  // const favoritesMemo = useMemo(() => {
+  //   if (user) {
+  //     dispatch(fetchFavorites(user)).then(setNewsData(favorites));
+  //   }
+  // })
+  // useEffect(async () => {
+  //   await favoritesMemo();
+  //   return () => {
+  //     favoritesMemo()
+  //   };
+  // }, []);
+  
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchFavorites(user))
+    };
+  }, [user]);
 
   const handleSelection = category => {
     fetchData(category, 'us')
@@ -28,20 +47,7 @@ const CategoriesScreen = ({ navigation }) => {
 
   useEffect(() => {
     handleSelection(selected);
-  }, [selected]);
-
-  const memoizedValue = useMemo(() => {
-    if (user) {
-      dispatch(fetchFavorites(user)).then(setNewsData(favorites));
-    }
-  })
-
-  useEffect(async () => {
-    memoizedValue()
-    return () => {
-      memoizedValue()
-    };
-  }, [user]);
+  }, [selected])
 
   return (
     <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>

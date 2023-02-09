@@ -13,28 +13,23 @@ const FavoritesScreen = ({ navigation }) => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const { user, favorites, loading } = useSelector(state => state.reducers);
+  const dispatch = useDispatch();
 
   const emptyList = "Loading...";
   const title = "Please Sign in for retrieve your stored data";
 
-  const memoizedValue = useMemo(() => {
-    if (user) {
-      dispatch(fetchFavorites(user)).then(setNewsData(favorites));
-    }
-  })
-
-  // useEffect(() => {
-  //   memoizedValue()
-  // }, [user, favorites]);
-
-  useEffect(async () => {
-    memoizedValue()
-    return () => {
-      memoizedValue()
-    };
-  }, [user]);
-
-  const dispatch = useDispatch();
+  // const favoritesMemo = useMemo(() => {
+  //   if (user) {
+  //     dispatch(fetchFavorites(user)).then(setNewsData(favorites));
+  //   }
+  // })
+  // useEffect(async () => {
+  //   await favoritesMemo();
+  //   return () => {
+  //     favoritesMemo()
+  //   };
+  // }, []);
+  
 
   const handleSelection = category => {
     if (user) {

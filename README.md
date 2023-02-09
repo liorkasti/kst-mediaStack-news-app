@@ -34,5 +34,5 @@ Enjoy! thank you.
 - [x] Add Welcome Screen 
 - [x] Display articles from api in a Category Cards 
 - [x] Wrap with a state provider
-- [ ] Save favorites capability 
-- [ ] Save user data on cloud
+- [x] Save favorites capability 
+- [x] Save user data on cloud
