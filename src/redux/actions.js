@@ -1,9 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import { ref } from '../constants/firebase.utils';
-import {
-  FETCH_DATA, LOGIN,
-  LOGOUT, SET_LOADING
-} from './types';
+import { FETCH_DATA, LOGIN, LOGOUT, SET_LOADING } from './types';
+
 
 export const logout = async (callback) => dispatch => {
   ref.doc(null);
@@ -12,6 +10,7 @@ export const logout = async (callback) => dispatch => {
     type: LOGOUT,
   });
 }
+
 export const login = async (payload, callback) => dispatch => {
   try {
     ref.doc(payload).set({foo:'bar'}, { merge: true })
@@ -47,7 +46,7 @@ export const storeData = async (user, favorites, item, callback) => {
 
 export const removeData = async (user, favorites, item, callback) => {
   try {
-    ref.doc(user).update({
+    await ref.doc(user).update({
       favorites: favorites?.filter(
         i => i?.title !== item?.title
       )

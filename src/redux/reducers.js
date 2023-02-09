@@ -1,7 +1,4 @@
-import {
-  FETCH_DATA, LOGIN,
-  LOGOUT, SET_LOADING
-} from './types';
+import { FETCH_DATA, LOGIN, LOGOUT, SET_LOADING } from './types';
 
 const initialState = {
   user: null,

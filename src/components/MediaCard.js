@@ -26,7 +26,8 @@ const MediaCard = ({ data }) => {
           () => dispatch(fetchFavorites(user))))
       } else {
         setBooked(false)
-        dispatch(removeData(user, favorites, item));
+        dispatch(removeData(user, favorites, item,
+          () => dispatch(fetchFavorites(user))))
       }
     } else { Alert.alert('Oops!', 'Please sign in first.') }
   }

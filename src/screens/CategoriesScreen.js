@@ -27,7 +27,7 @@ const CategoriesScreen = ({ navigation }) => {
   //   return () => {
   //     favoritesMemo()
   //   };
-  // }, []);
+  // }, [favorites]);
   
   useEffect(() => {
     if (user) {

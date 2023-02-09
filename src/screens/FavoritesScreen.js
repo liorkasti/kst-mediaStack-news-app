@@ -18,18 +18,11 @@ const FavoritesScreen = ({ navigation }) => {
   const emptyList = "Loading...";
   const title = "Please Sign in for retrieve your stored data";
 
-  // const favoritesMemo = useMemo(() => {
-  //   if (user) {
-  //     dispatch(fetchFavorites(user)).then(setNewsData(favorites));
-  //   }
-  // })
-  // useEffect(async () => {
-  //   await favoritesMemo();
-  //   return () => {
-  //     favoritesMemo()
-  //   };
-  // }, []);
-  
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchFavorites(user))
+    };
+  }, [user]);
 
   const handleSelection = category => {
     if (user) {
@@ -64,7 +57,7 @@ const FavoritesScreen = ({ navigation }) => {
         defaultOption={{ key: '0', value: 'Choose Category' }}
       />
       {favorites ?
-        <MediaCard data={newsData} />
+        <MediaCard data={favorites} />
         :
         listEmptyComponent()
       }
