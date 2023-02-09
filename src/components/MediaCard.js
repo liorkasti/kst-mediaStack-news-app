@@ -44,7 +44,6 @@ const MediaCard = ({ data }) => {
     }
     if (route === 'Favorites') {
       isBooked = true
-      console.log({ isBooked, routere });
     }
     setBooked(isBooked)
 

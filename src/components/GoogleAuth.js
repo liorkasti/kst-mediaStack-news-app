@@ -9,8 +9,7 @@ import { fetchFavorites, login, logout, setLoading } from '../redux/actions';
 const GoogleAuth = () => {
     const [userInfo, setUserInfo] = useState();
     const isDarkMode = useColorScheme() === 'dark';
-    const { user, favorites, loading } = useSelector(state => state.reducers);
-    console.log({ user, favorites, loading });
+    const { loading } = useSelector(state => state.reducers);
 
     const dispatch = useDispatch();
 

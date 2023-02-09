@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,7 +26,11 @@ const FavoritesScreen = ({ navigation }) => {
 
   const handleSelection = category => {
     if (user) {
-      dispatch(fetchFavorites(user)).then(setNewsData(favorites))
+      dispatch(fetchFavorites(user))
+        .then(
+          setNewsData(favorites?.filter(
+            i => i?.category !== category))
+        )
     }
   }
 

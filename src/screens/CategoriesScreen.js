@@ -1,34 +1,20 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { StyleSheet, View, useColorScheme } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, useColorScheme, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { useQuery } from 'react-query';
+import { useDispatch, useSelector } from 'react-redux';
 import MediaCard from '../components/MediaCard';
 import { CATEGORIES } from '../constants/categories';
-import { fetchData, useFetchMediaStack, useNews } from '../hooks/useFetch';
-import { fetchFavorites, setFavorites, getData } from '../redux/actions'
+import { fetchData } from '../hooks/useFetch';
+import { fetchFavorites } from '../redux/actions';
 
 const CategoriesScreen = ({ navigation }) => {
   const [newsData, setNewsData] = useState([]);
-  const [news, setNews] = useState([]);
   const [selected, setSelected] = useState([]);
   const isDarkMode = useColorScheme() === 'dark';
 
-  const { user, favorites, loading } = useSelector(state => state.reducers);
+  const { user } = useSelector(state => state.reducers);
   const dispatch = useDispatch();
 
-  // const favoritesMemo = useMemo(() => {
-  //   if (user) {
-  //     dispatch(fetchFavorites(user)).then(setNewsData(favorites));
-  //   }
-  // })
-  // useEffect(async () => {
-  //   await favoritesMemo();
-  //   return () => {
-  //     favoritesMemo()
-  //   };
-  // }, [favorites]);
-  
   useEffect(() => {
     if (user) {
       dispatch(fetchFavorites(user))
