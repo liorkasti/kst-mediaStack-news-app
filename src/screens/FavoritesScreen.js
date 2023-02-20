@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { StyleSheet, Text, useColorScheme, View, ActivityIndicator } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { useDispatch, useSelector } from 'react-redux';
 import MediaCard from '../components/MediaCard';
@@ -22,14 +22,24 @@ const FavoritesScreen = ({ navigation }) => {
     if (user) {
       dispatch(fetchFavorites(user))
     };
-  }, [user]);
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchFavorites(user))
+    };
+  }, [user, newsData]);
 
   const handleSelection = category => {
+    console.log('category :>> ', category);
     if (user) {
       dispatch(fetchFavorites(user))
         .then(
           setNewsData(favorites?.filter(
-            i => i?.category !== category))
+            i =>
+              i.category !== category
+              || category !== 'all'
+          ))
         )
     }
   }
@@ -50,6 +60,14 @@ const FavoritesScreen = ({ navigation }) => {
     )
   }
 
+  if (!loading) {
+    return (
+      <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+        <ActivityIndicator />
+      </View>
+    )
+  }
+
   return (
     <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>
       <SelectList
@@ -61,7 +79,7 @@ const FavoritesScreen = ({ navigation }) => {
         defaultOption={{ key: '0', value: 'Choose Category' }}
       />
       {favorites ?
-        <MediaCard data={favorites} />
+        <MediaCard data={newsData} />
         :
         listEmptyComponent()
       }

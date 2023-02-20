@@ -39,7 +39,7 @@ export const storeData = async (user, favorites, item, callback) => {
     })
     callback ? callback() : null;
   } catch (error) {
-    ref.doc(payload).set({ favorites: [item, ...favorites] })
+    // ref.doc(payload).set({ favorites: [item, ...favorites] })
     console.log('Store: Something went wrong while fetching from firestore.', error);
   }
 }
@@ -47,7 +47,7 @@ export const storeData = async (user, favorites, item, callback) => {
 export const removeData = async (user, favorites, item, callback) => {
   try {
     await ref.doc(user).update({
-      favorites: favorites?.filter(
+      favorites: favorites.filter(
         i => i?.title !== item?.title
       )
     })
@@ -59,7 +59,7 @@ export const removeData = async (user, favorites, item, callback) => {
 
 export const fetchFavorites = async (user, didLoad) => {
   try {
-    let favorites = await ref.doc(user).get();
+    let favorites = await ref.doc(user)?.get();
     return dispatch => {
       didLoad ? didLoad() : null;
       dispatch({

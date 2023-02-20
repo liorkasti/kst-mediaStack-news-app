@@ -16,9 +16,9 @@ const MediaCard = ({ data }) => {
   const { user, favorites, loading } = useSelector(state => state.reducers);
   
   const toggle = async (item) => {
-    if (user) {
+    if (user || !loading) {
       const favoriteIndex = favorites?.findIndex(
-        favorite => favorite.title === item.title
+        favorite => favorite?.title === item?.title
       )
       if (favoriteIndex < 0) {
         setBooked(true)
@@ -33,7 +33,7 @@ const MediaCard = ({ data }) => {
   }
 
   const renderCardItem = (item) => {
-    const favoriteIndex = favorites.findIndex(
+    const favoriteIndex = favorites?.findIndex(
       favorite => favorite.title === item.title
     )
     let isBooked = false

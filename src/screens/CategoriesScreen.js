@@ -5,20 +5,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import MediaCard from '../components/MediaCard';
 import { CATEGORIES } from '../constants/categories';
 import { fetchFavorites } from '../redux/actions';
-import { fetchData, UseFetchMediaStack } from '../hooks/useFetch';
+import { fetchData, useFetchMediaStack } from '../hooks/useFetch';
 import { API_KEY, BASE_URL, country } from "../constants/api";
 import axios from 'axios';
-import { useQuery } from 'react-query';
+import { useQueryClient } from 'react-query';
 import dummy from '../constants/dummy.json'
+import newsKeys from '../constants/queryKeys'
 
 const CategoriesScreen = ({ navigation }) => {
   const [newsData, setNewsData] = useState([]);
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState('');
   const isDarkMode = useColorScheme() === 'dark';
 
-
-  const onSuccess = (data) => { console.log('data :>> ', data); }
-  const onError = (error) => { console.log('error :>> ', error); }
+  const queryClient = useQueryClient();
+  const onSuccess = (data) => { setNewsData(data.data), console.log('onSuccess :>> '); }
+  const onError = (error) => { console.log('onError :>> ', error); }
   // const { isLoading, data, isError, error, isFetching, refresh } = useQuery(
   //   ['news', category],
   //   () => fetchData(category), {
@@ -26,21 +27,28 @@ const CategoriesScreen = ({ navigation }) => {
   //   onError,
   // });
   const { isLoading, data, isError, error, isFetching, refresh } = //(error) =>
-    UseFetchMediaStack(category, onSuccess, onError);
-  console.log('RQ :>> ', { isLoading, isFetching }, data);
+    useFetchMediaStack(category, onSuccess, onError);
+  console.log('RQ :>> ', { isLoading, isFetching }/* , data?.data.map((n) => console.log('n.title :>> ', n.category)) */);
 
 
   const handleSelection = category => {
-    console.log('selected :>> ', category)
-    setNewsData(data.data)
-    // fetchData(category, 'us')
-    //   .then(data => {
-    //     setNewsData(data.data)
-    //   })
-    // .catch(error => {
-    //   console.log(error);
-    // })
+    // console.log('selected :>> ', category)
+
+    fetchData(category, 'us')
+      .then(data => {
+        setNewsData(data.data)
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
+
+  // useEffect(() => {
+  //   queryClient.prefetchQuery(
+  //     ['news', category],
+  //     () => UseFetchMediaStack(category, onSuccess, onError))
+  // }, [category, queryClient])
+
 
   const { user } = useSelector(state => state.reducers);
   const dispatch = useDispatch();
@@ -49,13 +57,13 @@ const CategoriesScreen = ({ navigation }) => {
     if (user) {
       dispatch(fetchFavorites(user))
     };
-    return () => {
-      setNewsData([])
-    };
+    // return () => {
+    //   setNewsData([])
+    // };
   }, [user]);
 
   if (isLoading || isFetching) return (
-    <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+    <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>
       <ActivityIndicator />
     </View>
   );
@@ -65,11 +73,11 @@ const CategoriesScreen = ({ navigation }) => {
       <SelectList
         setSelected={(val) => setCategory(val)}
         data={CATEGORIES}
+        placeholder='Select Category'
         save="value"
-        // onSelect={() => console.log('selected :>> ', category)}
         onSelect={() => handleSelection(category)}
         label="Category"
-        defaultOption={{ key: '0', value: 'Choose Category' }}
+        defaultOption={{ key: category, value: category }}
       />
       <MediaCard data={newsData} />
     </View>

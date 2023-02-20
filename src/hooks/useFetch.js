@@ -2,14 +2,15 @@ import { API_KEY, BASE_URL, country } from "../constants/api";
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import dummy from '../constants/dummy.json'
+import newsKeys from '../constants/queryKeys'
 
 export const fetchData = async (category, country = "us") => {
     // var requestOptions = {
     //     method: "GET",
     //     redirect: "follow",
     // };
-
-    // let articles = await axios.get(`${BASE_URL}?access_key=${API_KEY}&categories=${category}&countries=${country}`,
+    // console.log(`${BASE_URL}?access_key=${API_KEY}&categories=${category}&countries=${country}`);
+    // let articles = await axios.get(`${BASE_URL}?access_key=${API_KEY}&limit=100&categories=${category}&countries=${country}`,
     //     requestOptions
     // );
     // let result = await articles;
@@ -18,17 +19,17 @@ export const fetchData = async (category, country = "us") => {
     return dummy;
 };
 
-export const UseFetchMediaStack = (category, onSuccess, onError) => {
+export const useFetchMediaStack = (category, onSuccess, onError) => {
     const { isLoading, data, isError, error, isFetching, refresh } = useQuery(
-        ['news', category],
+        [newsKeys, category],
         () => fetchData(category), {
         onSuccess,
         onError,
+        staleTime: 2000,
+        keepPreviousData: true,
     })
-    console.log('category :>> ', category);
     return {
-        isLoading, data, isError, error, isFetching, refresh,
-        onSuccess,
-        onError,
+        isLoading, data, isError, error, isFetching,
+        refresh, onSuccess, onError,
     }
 }
