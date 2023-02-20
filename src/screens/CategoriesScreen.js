@@ -17,7 +17,6 @@ const CategoriesScreen = ({ navigation }) => {
   const [category, setCategory] = useState('');
   const isDarkMode = useColorScheme() === 'dark';
 
-  const queryClient = useQueryClient();
   const onSuccess = (data) => { setNewsData(data.data), console.log('onSuccess :>> '); }
   const onError = (error) => { console.log('onError :>> ', error); }
   const { isLoading, data, isError, error, isFetching, refresh } = useQuery(
@@ -45,11 +44,12 @@ const CategoriesScreen = ({ navigation }) => {
     //   })
   }
 
-  useEffect(() => {
-    queryClient.prefetchQuery(
-      ['news', category],
-      () => useFetchMediaStack(category, onSuccess, onError))
-  }, [category, queryClient])
+  // const queryClient = useQueryClient();
+  // useEffect(() => {
+  //   queryClient.prefetchQuery(
+  //     ['news', category],
+  //     () => useFetchMediaStack(category, onSuccess, onError))
+  // }, [category, queryClient])
 
 
   const { user } = useSelector(state => state.reducers);
@@ -62,7 +62,7 @@ const CategoriesScreen = ({ navigation }) => {
     // return () => {
     //   setNewsData([])
     // };
-  }, [user]);
+  }, [user, newsData]);
 
   if (isLoading || isFetching) return (
     <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>

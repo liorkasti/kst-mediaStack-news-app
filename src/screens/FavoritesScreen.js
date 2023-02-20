@@ -17,16 +17,18 @@ const FavoritesScreen = ({ navigation }) => {
 
   const emptyList = "Loading...";
   const title = "Please Sign in for retrieve your stored data";
+  //TODO: useQuery
+  // useEffect(() => {
+  //   if (user) {
+  //     dispatch(fetchFavorites(user))
+  //     setNewsData(favorites)
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (user) {
       dispatch(fetchFavorites(user))
-    };
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      dispatch(fetchFavorites(user))
+      setNewsData(favorites)
     };
   }, [user, newsData]);
 
@@ -62,7 +64,7 @@ const FavoritesScreen = ({ navigation }) => {
 
   if (!loading) {
     return (
-      <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+      <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>
         <ActivityIndicator />
       </View>
     )

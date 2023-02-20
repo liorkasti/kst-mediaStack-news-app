@@ -9,13 +9,19 @@ export default () => {
     const Tab = createMaterialBottomTabNavigator();
     return (
         <NavigationContainer>
-            <Tab.Navigator>
+            <Tab.Navigator
+                barStyle={{
+                    borderTopWidth: 2,
+                    borderTopColor: THEME.mediaGreen,
+                }}
+                activeColor={THEME.mediaLight}
+                inactiveColor={THEME.mediaDark}
+            >
                 <Tab.Screen
                     name="Categories"
                     component={CategoriesScreen}
                     options={{
                         tabBarLabel: "Categories",
-                        tabBarColor: THEME.mediaGreen,
                         tabBarIcon: ({ color }) => (
                             <Icon name="world-o" color={color} size={20} />
                         ),
@@ -26,7 +32,6 @@ export default () => {
                     component={FavoritesScreen}
                     options={{
                         tabBarLabel: 'Favorites',
-                        tabBarColor: THEME.mediaGreen,
                         tabBarIcon: ({ color }) => (
                             <Icon name="favorite" color={color} size={20} />
                         ),

@@ -16,7 +16,7 @@ const MediaCard = ({ data }) => {
   const { user, favorites, loading } = useSelector(state => state.reducers);
   
   const toggle = async (item) => {
-    if (user || !loading) {
+    if (user) {
       const favoriteIndex = favorites?.findIndex(
         favorite => favorite?.title === item?.title
       )
