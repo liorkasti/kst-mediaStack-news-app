@@ -1,54 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, useColorScheme, View, ActivityIndicator } from 'react-native';
+import React, { useState } from 'react';
+import { ActivityIndicator, StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { useDispatch, useSelector } from 'react-redux';
+import { useQuery } from 'react-query';
+import { useSelector } from 'react-redux';
 import MediaCard from '../components/MediaCard';
 import { CATEGORIES } from '../constants/categories';
-import { fetchFavorites } from '../redux/actions';
-
 
 const FavoritesScreen = ({ navigation }) => {
   const [newsData, setNewsData] = useState([]);
-  const [selected, setSelected] = useState([]);
+  const [category, setCategory] = useState('');
   const isDarkMode = useColorScheme() === 'dark';
 
   const { user, favorites, loading } = useSelector(state => state.reducers);
-  const dispatch = useDispatch();
 
   const emptyList = "Loading...";
   const title = "Please Sign in for retrieve your stored data";
-  //TODO: useQuery
-  // useEffect(() => {
-  //   if (user) {
-  //     dispatch(fetchFavorites(user))
-  //     setNewsData(favorites)
-  //   };
-  // }, []);
 
-  useEffect(() => {
-    if (user) {
-      dispatch(fetchFavorites(user))
+  //TODO: query filter
+  /*   
+  const onSuccess = (data) => { setNewsData(data), console.log('onSuccess :>> ', data.map((n) => console.log('n.title :>> ', n.category))); }
+    const onError = (error) => { console.log('onError :>> ', error); }
+  
+    const { isLoading, data, isError, error, isFetching, refresh } = useQuery(
+      ['favoritesKeys', category],
+      () => fetchFavorites(category), {
+      onSuccess,
+      onError,
+    });
+  
+    const fetchFavorites = category => {
+      return favorites?.filter(
+        i =>
+          i.category !== category
+          || category !== 'all'
+      )
+    } */
+
+
+  const fetchFavorites = category => {
+    if (category === 'all') {
       setNewsData(favorites)
-    };
-  }, [user, newsData]);
-
-  const handleSelection = category => {
-    console.log('category :>> ', category);
-    if (user) {
-      dispatch(fetchFavorites(user))
-        .then(
-          setNewsData(favorites?.filter(
-            i =>
-              i.category !== category
-              || category !== 'all'
-          ))
-        )
+    } else {
+      let filterNews = []
+      newsData?.map(
+        i =>
+          console.log('i.category :>> ', i.category, category) &&
+          i.category == category && filterNews.push(i)
+        // || category !== 'all'
+      )
+      setNewsData(filterNews)
     }
   }
-
-  useEffect(() => {
-    handleSelection(selected);
-  }, [selected]);
 
   const listEmptyComponent = () => {
     return <Text>{emptyList}</Text>;
@@ -62,21 +64,19 @@ const FavoritesScreen = ({ navigation }) => {
     )
   }
 
-  if (!loading) {
-    return (
-      <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>
-        <ActivityIndicator />
-      </View>
-    )
-  }
+  if (!loading) return (
+    <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>
+      <ActivityIndicator />
+    </View>
+  );
 
   return (
     <View style={[styles.container, { backgroundColor: isDarkMode ? 'black' : 'white' }]}>
       <SelectList
-        setSelected={(val) => setSelected(val)}
+        setSelected={(val) => setCategory(val)}
         data={CATEGORIES}
         save="value"
-        onSelect={() => handleSelection(selected)}
+        onSelect={() => (fetchFavorites(category))}
         label="Category"
         defaultOption={{ key: '0', value: 'Choose Category' }}
       />

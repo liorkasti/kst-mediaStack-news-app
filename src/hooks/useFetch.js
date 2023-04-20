@@ -5,18 +5,18 @@ import dummy from '../constants/dummy.json'
 import newsKeys from '../constants/queryKeys'
 
 export const fetchData = async (category = '', country = "us") => {
-    // var requestOptions = {
-    //     method: "GET",
-    //     redirect: "follow",
-    // };
-    // console.log(`${BASE_URL}?access_key=${API_KEY}&categories=${category}&countries=${country}`);
-    // let articles = await axios.get(`${BASE_URL}?access_key=${API_KEY}&limit=100&categories=${category}&countries=${country}`,
-    //     requestOptions
-    // );
-    // let result = await articles;
-    // articles = null;
-    // return result.data;
-    return dummy;
+    var requestOptions = {
+        method: "GET",
+        redirect: "follow",
+    };
+    console.log(`${BASE_URL}?access_key=${API_KEY}&categories=${category}&countries=${country}`);
+    let articles = await axios.get(`${BASE_URL}?access_key=${API_KEY}&limit=100&categories=${category}&countries=${country}`,
+        requestOptions
+    );
+    let result = await articles;
+    articles = null;
+    return result.data;
+    // return dummy;
 };
 
 export const useFetchMediaStack = (category, onSuccess, onError) => {
