@@ -1,7 +1,6 @@
 import { ref } from '../constants/firebase.utils';
 import { FETCH_DATA, LOGIN, LOGOUT, SET_LOADING } from './types';
 
-
 export const logout = async (callback) => dispatch => {
   ref.doc(null);
   callback ? callback() : null;
@@ -29,31 +28,6 @@ export const setLoading = (payload, callback) => dispatch => {
     type: SET_LOADING,
     payload,
   });
-}
-
-export const storeData = async (user, favorites, item, callback) => {
-  try {
-    await ref.doc(user).update({
-      favorites: [item, ...favorites],
-    })
-    callback ? callback() : null;
-  } catch (error) {
-    ref.doc(payload).set({ favorites: [item, ...favorites] })
-    console.log('Store: Something went wrong while fetching from firestore.', error);
-  }
-}
-
-export const removeData = async (user, favorites, item, callback) => {
-  try {
-    await ref.doc(user).update({
-      favorites: favorites?.filter(
-        i => i?.title !== item?.title
-      )
-    })
-    callback ? callback() : null;
-  } catch (error) {
-    console.log('Remove: Something went wrong while fetching from firestore.', error);
-  }
 }
 
 export const fetchFavorites = async (user) => {

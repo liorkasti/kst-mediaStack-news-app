@@ -21,8 +21,7 @@ const GoogleAuth = () => {
         try {
             await GoogleSignin.revokeAccess();
             await GoogleSignin.signOut();
-            dispatch(await logout(dispatch(setLoading(false),
-                 () => dispatch( fetchFavorites(null))
+            dispatch(await logout(dispatch(setLoading(false)
             )));
             console.log('User signed out!');
         } catch (error) {

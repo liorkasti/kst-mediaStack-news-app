@@ -5,7 +5,8 @@ import { Alert, FlatList, Image, Pressable, StyleSheet, Text, useColorScheme, Vi
 import Icon from 'react-native-vector-icons/Fontisto';
 import { useDispatch, useSelector } from 'react-redux';
 import { THEME } from '../constants/theme';
-import { fetchFavorites, removeData, storeData } from '../redux/actions';
+import { fetchFavorites } from '../redux/actions';
+import { removeData, storeData } from '../hooks/useToggle';
 
 const MediaCard = ({ data }) => {
   const [booked, setBooked] = useState(false);
@@ -15,19 +16,19 @@ const MediaCard = ({ data }) => {
   const dispatch = useDispatch();
   const { user, favorites, loading } = useSelector(state => state.reducers);
   
-  const toggle = async (item) => {
+  const toggle = (item) => {
     if (user) {
       const favoriteIndex = favorites?.findIndex(
         favorite => favorite.title === item.title
       )
       if (favoriteIndex < 0) {
         setBooked(true)
-        dispatch(storeData(user, favorites, item,
-          () => dispatch(fetchFavorites(user))))
+        storeData(user, favorites, item,
+          () => dispatch(fetchFavorites(user)))
       } else {
         setBooked(false)
-        dispatch(removeData(user, favorites, item,
-          () => dispatch(fetchFavorites(user))))
+        removeData(user, favorites, item,
+          () => dispatch(fetchFavorites(user)))
       }
     } else { Alert.alert('Oops!', 'Please sign in first.') }
   }
