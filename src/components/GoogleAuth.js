@@ -22,7 +22,7 @@ const GoogleAuth = () => {
             await GoogleSignin.revokeAccess();
             await GoogleSignin.signOut();
             dispatch(await logout(dispatch(setLoading(false),
-                () => dispatch(fetchFavorites(null))
+                 () => dispatch( fetchFavorites(null))
             )));
             console.log('User signed out!');
         } catch (error) {
@@ -59,38 +59,6 @@ const GoogleAuth = () => {
             }
         }
     }
-
-    const signin = async () => {
-        try {
-            const { idToken, user } = await GoogleSignin.signIn();
-            const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-            await GoogleSignin.hasPlayServices();
-            if (user) {
-                console.log("GOOGLE USER", user);
-                setUserInfo(user);
-                dispatch(login(user))
-                // //TODO: fetchFavorites(),
-            }
-            // const users = await auth().signInWithCredential(googleCredential);
-            // users.then((user) => { console.log('user :>> ', user); })
-
-            return user;
-        } catch (error) {
-            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-            } else if (error.code === statusCodes.IN_PROGRESS) {
-            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-            } else {
-                if (error.code === 'auth/email-already-in-use') {
-                    console.log('That email address is already in use!');
-                }
-                if (error.code === 'auth/invalid-email') {
-                    console.log('That email address is invalid!');
-                }
-                console.error(error);
-            }
-        }
-    }
-
 
     if (!userInfo || !loading) {
         return (

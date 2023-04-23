@@ -24,7 +24,6 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         user: null,
-        favorites: []
       };
     case SET_LOADING:
       return {
