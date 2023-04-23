@@ -2,7 +2,6 @@ import { FETCH_DATA, LOGIN, LOGOUT, SET_LOADING } from './types';
 
 const initialState = {
   user: null,
-  users: [],
   favorites: [],
   loading: false,
 };

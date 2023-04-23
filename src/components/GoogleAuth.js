@@ -22,7 +22,7 @@ const GoogleAuth = () => {
             await GoogleSignin.revokeAccess();
             await GoogleSignin.signOut();
             dispatch(await logout(dispatch(setLoading(false),
-                () => dispatch(fetchFavorites())
+                () => dispatch(fetchFavorites(null))
             )));
             console.log('User signed out!');
         } catch (error) {
@@ -40,7 +40,7 @@ const GoogleAuth = () => {
                 setUserInfo(user);
                 dispatch(await login(user.email,
                     () => dispatch(setLoading(true),
-                        // () => dispatch(fetchFavorites(user.email))
+                        () => dispatch(fetchFavorites(user.email))
                     )))
             }
             return user;

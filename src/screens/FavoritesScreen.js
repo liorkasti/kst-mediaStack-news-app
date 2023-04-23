@@ -21,22 +21,18 @@ const FavoritesScreen = ({ navigation }) => {
   useEffect(() => {
     if (user) {
       dispatch(fetchFavorites(user))
+      setNewsData(favorites)
     };
-  }, [user]);
+  }, [user, loading]);
 
   const handleSelection = category => {
-    if (user) {
-      dispatch(fetchFavorites(user))
-        .then(
-          setNewsData(favorites?.filter(
-            i => i?.category !== category))
-        )
+    if (category === 'all' || category == 0) {
+      setNewsData(favorites)
+    } else {
+      setNewsData(favorites?.filter(
+        i => i.category === category));
     }
   }
-
-  useEffect(() => {
-    handleSelection(selected);
-  }, [selected]);
 
   const listEmptyComponent = () => {
     return <Text>{emptyList}</Text>;
@@ -60,8 +56,8 @@ const FavoritesScreen = ({ navigation }) => {
         label="Category"
         defaultOption={{ key: '0', value: 'Choose Category' }}
       />
-      {favorites ?
-        <MediaCard data={favorites} />
+      {newsData ?
+        <MediaCard data={newsData} />
         :
         listEmptyComponent()
       }

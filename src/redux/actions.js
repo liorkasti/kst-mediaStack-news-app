@@ -57,11 +57,13 @@ export const removeData = async (user, favorites, item, callback) => {
   }
 }
 
-export const fetchFavorites = async (user, didLoad) => {
+export const fetchFavorites = async (user) => {
   try {
     let favorites = await ref.doc(user).get();
-    return dispatch => {
-      didLoad ? didLoad() : null;
+    return (dispatch, getState) => {
+      console.log('getState() :>> ', getState());
+      console.log('didLoad() :>> ', getState().loading);
+      getState().loading ? getState().loading : null;
       dispatch({
         type: FETCH_DATA,
         payload: favorites
