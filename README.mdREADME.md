@@ -1,4 +1,3 @@
-# The MovieDB react-native app 
 ## Description:
 A react-native app that allow the user to add favorites articles from mediaStack API with React Native and Redux.
 
